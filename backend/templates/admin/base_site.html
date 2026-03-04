@@ -1,0 +1,38 @@
+{% extends "admin/base_site.html" %}
+ 
+{% load static %}
+{% load i18n %}
+ 
+<!-- custom filter module -->
+{% load i18n_switcher %}
+ 
+{% block extrahead %}
+    <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'css/custom_admin.css' %}"/>
+{% endblock %}
+ 
+{% block userlinks %}
+    <a href="{{ request|switch_i18n:'ar' }}">
+        <img class="i18n_flag" src="{% static 'images/flag-ar-16.png' %}"/>
+    </a> /
+    <a href="{{ request|switch_i18n:'en' }}">
+        <img class="i18n_flag" src="{% static 'images/flag-en-16.png' %}"/>
+    </a> /
+    <a href="{{ request|switch_i18n:'fr' }}">
+        <img class="i18n_flag" src="{% static 'images/flag-fr-16.png' %}"/>
+    </a> /
+    {% if user.is_active and user.is_staff %}
+        {% url 'django-admindocs-docroot' as docsroot %}
+        {% if docsroot %}
+            <a href="{{ docsroot }}">{% trans 'Documentation' %}</a> /
+        {% endif %}
+    {% endif %}
+    {% if user.has_usable_password %}
+        <a href="{% url 'admin:password_change' %}">{% trans 'Change password' %}</a> /
+    {% endif %}
+    <a href="{% url 'admin:logout' %}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">{% trans 'Log out' %}</a>
+    <!-- Add a hidden logout form with a POST method -->
+    <form id="logout-form" action="{% url 'admin:logout' %}" method="post" style="display: none;">
+        {% csrf_token %}
+    </form>
+{% endblock %}

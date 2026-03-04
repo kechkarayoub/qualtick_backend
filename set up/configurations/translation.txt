@@ -1,0 +1,29 @@
+Install gettext:
+    Run:
+        apt install gettext
+    If not working, run:
+        sudo apt install gettext
+    If not working, run:
+        apt update && apt install -y gettext
+
+
+
+
+Generate .po Files:
+    For each app:
+        Create locale directory.
+        Change working directory to the app
+        Run:
+            django-admin makemessages -l ar
+            django-admin makemessages -l en
+            django-admin makemessages -l fr
+        Or:
+            python ../manage.py makemessages -l ar
+            python ../manage.py makemessages -l en
+            python ../manage.py makemessages -l fr
+Generate .mo files:
+    For each app:
+        After adding translations, run:
+            django-admin compilemessages
+        Or:
+            python ../manage.py compilemessages

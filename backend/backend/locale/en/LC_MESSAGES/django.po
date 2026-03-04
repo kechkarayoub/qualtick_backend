@@ -1,0 +1,303 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-08-28 07:41+0100\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: admin.py:79
+#, python-format
+msgid "%(count)d message(s) marked as in progress."
+msgstr ""
+
+#: admin.py:81
+msgid "Mark as in progress"
+msgstr ""
+
+#: admin.py:90
+#, python-format
+msgid "%(count)d message(s) marked as resolved."
+msgstr ""
+
+#: admin.py:92
+msgid "Mark as resolved"
+msgstr ""
+
+#: admin.py:101
+#, python-format
+msgid "%(count)d message(s) marked as closed."
+msgstr ""
+
+#: admin.py:103
+msgid "Mark as closed"
+msgstr ""
+
+#: models.py:12
+msgid "Technical Support"
+msgstr ""
+
+#: models.py:13
+msgid "Billing & Account"
+msgstr ""
+
+#: models.py:14
+msgid "Feature Request"
+msgstr ""
+
+#: models.py:15
+msgid "Partnership"
+msgstr ""
+
+#: models.py:16
+msgid "Other"
+msgstr ""
+
+#: models.py:20
+msgid "New"
+msgstr ""
+
+#: models.py:21
+msgid "In Progress"
+msgstr ""
+
+#: models.py:22
+msgid "Resolved"
+msgstr ""
+
+#: models.py:23
+msgid "Closed"
+msgstr ""
+
+#: models.py:29
+msgid "Full Name"
+msgstr ""
+
+#: models.py:30
+msgid "The full name of the person contacting us"
+msgstr ""
+
+#: models.py:34
+msgid "Email Address"
+msgstr ""
+
+#: models.py:35
+msgid "Email address for response"
+msgstr ""
+
+#: models.py:41
+msgid "Subject"
+msgstr ""
+
+#: models.py:42
+msgid "Category of the inquiry"
+msgstr ""
+
+#: models.py:47
+msgid "Message"
+msgstr ""
+
+#: models.py:48
+msgid "The detailed message from the user"
+msgstr ""
+
+#: models.py:56
+msgid "Status"
+msgstr ""
+
+#: models.py:57
+msgid "Current status of the message"
+msgstr ""
+
+#: models.py:63
+msgid "Created At"
+msgstr ""
+
+#: models.py:64
+msgid "When the message was submitted"
+msgstr ""
+
+#: models.py:69
+msgid "Updated At"
+msgstr ""
+
+#: models.py:70
+msgid "When the message was last updated"
+msgstr ""
+
+#: models.py:79
+msgid "User"
+msgstr ""
+
+#: models.py:80
+msgid "Associated user account if logged in"
+msgstr ""
+
+#: models.py:86
+msgid "Admin Notes"
+msgstr ""
+
+#: models.py:87
+msgid "Internal notes for administrators"
+msgstr ""
+
+#: models.py:93
+msgid "Contact Message"
+msgstr ""
+
+#: models.py:94
+msgid "Contact Messages"
+msgstr ""
+
+#: serializers.py:29
+msgid "Message must be at least 10 characters long"
+msgstr ""
+
+#: serializers.py:39
+msgid "Name is required"
+msgstr ""
+
+#: services.py:43 tests/test_functionalities.py:395
+msgid "Geolocation service unavailable. Try again later."
+msgstr ""
+
+#: services.py:83
+msgid "Geolocation service unavailable"
+msgstr ""
+
+#: services.py:105
+#, python-brace-format
+msgid "Your verification code is: {code}"
+msgstr ""
+
+#: services.py:114
+msgid "Failed to send verification code"
+msgstr ""
+
+#: services.py:120
+msgid "Message sending service unavailable"
+msgstr ""
+
+#: services.py:145
+msgid "Bulk message sending failed"
+msgstr ""
+
+#: settings/base.py:132
+msgid "Arabic"
+msgstr ""
+
+#: settings/base.py:133
+msgid "English"
+msgstr ""
+
+#: settings/base.py:134
+msgid "French"
+msgstr ""
+
+#: templates/emails/footer.html:6
+#, python-format
+msgid "%(current_year)s © %(app_name)s. All rights reserved."
+msgstr ""
+
+#: tests/test_functionalities.py:186 tests/test_functionalities.py:196
+#: utils.py:69 utils.py:128
+msgid "Select"
+msgstr ""
+
+#: tests/test_models.py:1569 tests/test_models.py:1588 views.py:134
+msgid ""
+"Your message has been sent successfully. We will get back to you within 24 "
+"hours."
+msgstr ""
+
+#: tests/test_models.py:1606 views.py:140
+msgid "Please correct the errors below."
+msgstr ""
+
+#: tests/test_models.py:1906 views.py:148
+msgid "An error occurred while sending your message. Please try again later."
+msgstr ""
+
+#: tests/test_models.py:1911
+msgid "Error creating contact message"
+msgstr ""
+
+#: utils.py:128
+msgid "Apple"
+msgstr ""
+
+#: utils.py:128
+msgid "Default"
+msgstr ""
+
+#: utils.py:128
+msgid "Facebook"
+msgstr ""
+
+#: utils.py:128
+msgid "Google"
+msgstr ""
+
+#: utils.py:129
+msgid "Sms"
+msgstr ""
+
+#: utils.py:129
+msgid "Yahoo"
+msgstr ""
+
+#: utils.py:129
+msgid "Whatsapp"
+msgstr ""
+
+#: utils.py:129
+msgid "X"
+msgstr ""
+
+#: views.py:64
+msgid "An unexpected error occurred"
+msgstr ""
+
+#: ws_consumers.py:143
+msgid "Connected to profile updates"
+msgstr ""
+
+#: ws_consumers.py:179
+msgid "Unknown message type"
+msgstr ""
+
+#: ws_consumers.py:182
+msgid "Invalid JSON format"
+msgstr ""
+
+#: ws_consumers.py:185
+msgid "Internal server error"
+msgstr ""
+
+#: ws_consumers.py:212
+msgid "Error processing profile update"
+msgstr ""
+
+#: ws_consumers.py:236
+msgid "Error processing profile password update"
+msgstr ""
+
+#: ws_consumers.py:257
+msgid "Error processing profile password reset"
+msgstr ""
+
+#: ws_consumers.py:273
+msgid "Error processing notification"
+msgstr ""

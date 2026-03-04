@@ -1,0 +1,9 @@
+[MASTER]
+init-hook = 'import sys; sys.path.append(".")'
+ignore=migrations,venv,manage.py
+good-names=User
+load-plugins = pylint_django
+#disable=R0801
+
+[TYPECHECK]
+django-settings-module = backend.settings

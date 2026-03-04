@@ -1,0 +1,10 @@
+{% load i18n %}
+{% blocktrans with user.first_name as first_name %}
+Hello {{ first_name }},
+{% endblocktrans %}
+
+{% blocktrans %}
+Thank you for registering. Please verify your email by clicking the link below:
+{% endblocktrans %}
+
+{{ verification_url|safe }}

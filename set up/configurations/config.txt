@@ -1,0 +1,32 @@
+
+
+In the root directory backend, add file .env that contains variables that exists in .env.example
+
+
+Firebase firebase-service-account.json:
+    Get firebase-service-account.json from Firebase Console
+        Go to Firebase Console:  https://console.firebase.google.com/
+        Select Your Project.
+        Go to Project Settings:
+            Click the ⚙️ gear icon in the left sidebar.
+            Select Project settings.
+        Service Accounts Tab:
+            Click on the Service accounts tab.
+            Under "Firebase Admin SDK", click Generate new private key. This will download a JSON file (firebase-service-account.json).
+            Move the JSON file to your Django project: /your-django-project/firebase-service-account.json
+        DO NOT commit this file to GitHub or version control for security reasons.
+
+
+In the root directory backend; add supervisor.conf file that contains:
+    [supervisord]
+    nodaemon=true
+
+    [program:django]
+    command=python manage.py runserver host:djangoPort
+    directory=/app
+
+    [program:daphne]
+    command=daphne -b host -p WSPort qualitick.asgi:application
+    directory=/app
+
+

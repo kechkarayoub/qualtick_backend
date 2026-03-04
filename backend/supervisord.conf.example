@@ -1,0 +1,231 @@
+# Supervisor configuration file example
+# Copy this file to supervisord.conf and adjust settings as needed
+
+[supervisord]
+# Run in foreground (required for Docker containers)
+nodaemon=true
+
+# Log file location (create directory if it doesn't exist)
+logfile=/var/log/supervisor/supervisord.log
+
+# PID file location
+pidfile=/var/run/supervisord.pid
+
+# Directory where child log files are stored
+childlogdir=/var/log/supervisor
+
+# Run as root user (adjust for production environments)
+user=root
+
+# Log level (critical, error, warn, info, debug, trace, blather)
+loglevel=info
+
+# Maximum size of log files before rotation
+logfile_maxbytes=50MB
+
+# Number of backup log files to keep
+logfile_backups=10
+
+[supervisorctl]
+# Unix socket configuration for supervisorctl communication
+serverurl=unix:///var/run/supervisor.sock
+
+[unix_http_server]
+# Unix socket file location
+file=/var/run/supervisor.sock
+
+# Socket file permissions (only owner can access)
+chmod=0700
+
+# Optional: username and password for socket access
+# username=user
+# password=123
+
+[rpcinterface:supervisor]
+# Required RPC interface configuration
+supervisor.rpcinterface_factory = supervisor.rpcinterface:make_main_rpcinterface
+
+# Django Development Server Configuration
+[program:django]
+# Command to run Django development server
+command=python manage.py runserver 0.0.0.0:8000
+
+# Working directory
+directory=/app
+
+# Auto-start when supervisord starts
+autostart=true
+
+# Auto-restart if process exits unexpectedly
+autorestart=true
+
+# Restart policy: unexpected = only restart if exit code is not in expected codes
+autorestart=unexpected
+
+# Expected exit codes (process won't restart if exits with these codes)
+exitcodes=0,2
+
+# Time to wait before considering the program started successfully
+startsecs=5
+
+# Number of restart attempts before giving up
+startretries=3
+
+# Standard error log file
+stderr_logfile=/var/log/supervisor/django.err.log
+
+# Standard output log file
+stdout_logfile=/var/log/supervisor/django.out.log
+
+# Maximum size of log files before rotation
+stderr_logfile_maxbytes=10MB
+stdout_logfile_maxbytes=10MB
+environment=DJANGO_SETTINGS_MODULE="backend.settings"
+
+# Number of backup log files to keep
+stderr_logfile_backups=5
+stdout_logfile_backups=5
+
+# Capture stderr in stdout log file
+redirect_stderr=false
+
+# Environment variables for Django process
+environment=PYTHONPATH="/app",DJANGO_SETTINGS_MODULE="backend.settings"
+
+# Process priority (lower numbers = higher priority)
+priority=10
+
+# Daphne ASGI Server Configuration (for WebSockets)
+[program:daphne]
+# Command to run Daphne ASGI server
+command=daphne -b 0.0.0.0 -p 9000 backend.asgi:application
+
+# Working directory
+directory=/app
+
+# Auto-start when supervisord starts
+autostart=true
+
+# Auto-restart if process exits unexpectedly
+autorestart=true
+
+# Restart policy
+autorestart=unexpected
+
+# Expected exit codes
+exitcodes=0,2
+
+# Time to wait before considering the program started successfully
+startsecs=5
+
+# Number of restart attempts before giving up
+startretries=3
+
+# Standard error log file
+stderr_logfile=/var/log/supervisor/daphne.err.log
+
+# Standard output log file
+stdout_logfile=/var/log/supervisor/daphne.out.log
+
+# Maximum size of log files before rotation
+stderr_logfile_maxbytes=10MB
+stdout_logfile_maxbytes=10MB
+environment=DJANGO_SETTINGS_MODULE="backend.settings"
+
+# Number of backup log files to keep
+stderr_logfile_backups=5
+stdout_logfile_backups=5
+
+# Capture stderr in stdout log file
+redirect_stderr=false
+
+# Environment variables for Daphne process
+environment=PYTHONPATH="/app",DJANGO_SETTINGS_MODULE="backend.settings"
+
+# Process priority (lower numbers = higher priority)
+priority=20
+
+# Optional: Celery Worker Configuration (uncomment if using Celery)
+# [program:celery_worker]
+# command=celery -A backend worker --loglevel=info
+# directory=/app
+# autostart=true
+# autorestart=true
+# autorestart=unexpected
+# exitcodes=0,2
+# startsecs=10
+# startretries=3
+# stderr_logfile=/var/log/supervisor/celery_worker.err.log
+# stdout_logfile=/var/log/supervisor/celery_worker.out.log
+# stderr_logfile_maxbytes=10MB
+# stdout_logfile_maxbytes=10MB
+# environment=DJANGO_SETTINGS_MODULE="backend.settings"
+# stderr_logfile_backups=5
+# stdout_logfile_backups=5
+# redirect_stderr=false
+# environment=PYTHONPATH="/app",DJANGO_SETTINGS_MODULE="backend.settings"
+# priority=30
+
+# Optional: Celery Beat Configuration (uncomment if using Celery Beat for scheduled tasks)
+# [program:celery_beat]
+# command=celery -A backend beat --loglevel=info
+# directory=/app
+# autostart=true
+# autorestart=true
+# autorestart=unexpected
+# exitcodes=0,2
+# startsecs=10
+# startretries=3
+# stderr_logfile=/var/log/supervisor/celery_beat.err.log
+# stdout_logfile=/var/log/supervisor/celery_beat.out.log
+# stderr_logfile_maxbytes=10MB
+# stdout_logfile_maxbytes=10MB
+# environment=DJANGO_SETTINGS_MODULE="backend.settings"
+# stderr_logfile_backups=5
+# stdout_logfile_backups=5
+# redirect_stderr=false
+# environment=PYTHONPATH="/app",DJANGO_SETTINGS_MODULE="backend.settings"
+# priority=40
+
+# Group configuration (optional) - allows controlling multiple programs as a group
+[group:django_services]
+programs=django,daphne
+priority=999
+
+# Alternative production configuration using Gunicorn instead of Django dev server
+# [program:gunicorn]
+# command=gunicorn backend.wsgi:application --bind 0.0.0.0:8000 --workers 3 --timeout 120
+# directory=/app
+# autostart=true
+# autorestart=true
+# autorestart=unexpected
+# exitcodes=0,2
+# startsecs=5
+# startretries=3
+# stderr_logfile=/var/log/supervisor/gunicorn.err.log
+# stdout_logfile=/var/log/supervisor/gunicorn.out.log
+# stderr_logfile_maxbytes=10MB
+# stdout_logfile_maxbytes=10MB
+# environment=DJANGO_SETTINGS_MODULE="backend.settings"
+# stderr_logfile_backups=5
+# stdout_logfile_backups=5
+# redirect_stderr=false
+# environment=PYTHONPATH="/app",DJANGO_SETTINGS_MODULE="backend.settings"
+# priority=10
+
+# HTTP server configuration (optional) - allows web-based management
+# [inet_http_server]
+# port=127.0.0.1:9001
+# username=admin
+# password=admin
+
+# Include additional configuration files (optional)
+# [include]
+# files = /etc/supervisor/conf.d/*.conf
+
+# Event listener configuration (optional) - for monitoring process events
+# [eventlistener:memmon]
+# command=memmon -a 200MB -m user@example.com
+# events=PROCESS_STATE_RUNNING
+# stderr_logfile=/var/log/supervisor/memmon.err.log
+# stdout_logfile=/var/log/supervisor/memmon.out.log

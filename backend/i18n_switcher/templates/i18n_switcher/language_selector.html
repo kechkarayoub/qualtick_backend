@@ -1,0 +1,19 @@
+{% load i18n %}
+
+<div class="{{ css_class }}">
+    <label for="language-select">{% trans "Language" %}:</label>
+    <select id="language-select" onchange="switchLanguage(this.value)">
+        {% for lang_code, lang_info in language_urls.items %}
+            <option value="{{ lang_info.url }}" 
+                    {% if lang_code == current_language %}selected{% endif %}>
+                {{ lang_info.name }}
+            </option>
+        {% endfor %}
+    </select>
+</div>
+
+<script>
+function switchLanguage(url) {
+    window.location.href = url;
+}
+</script>

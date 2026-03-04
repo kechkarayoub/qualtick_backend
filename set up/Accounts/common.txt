@@ -1,0 +1,7 @@
+Geolocation:
+    https://findip.net: appqualitick@gmail.com
+    Visit:
+        https://cors-anywhere.herokuapp.com/corsdemo
+
+Firebase:
+    appqualitick@gmail.com

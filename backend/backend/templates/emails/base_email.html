@@ -1,0 +1,29 @@
+<!-- templates/emails/base_email.html -->
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{% block title %}<!-- Email-specific title goes here -->{% endblock %}</title>
+    </head>
+    <body style="margin: 0; padding: 0; background-color: #f4f4f4; font-family: Arial, sans-serif;">
+
+        <!-- Header -->
+        {% include "emails/header.html" %}
+
+        <!-- Main Content -->
+        <table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#ffffff" style="border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);">
+            <tr>
+                <td align="left" style="padding: 20px; color: #333333; font-size: 16px; line-height: 1.5;">
+                    {% block content %}
+                        <!-- Email-specific content goes here -->
+                    {% endblock %}
+                </td>
+            </tr>
+        </table>
+
+        <!-- Footer -->
+        {% include "emails/footer.html" %}
+
+    </body>
+</html>

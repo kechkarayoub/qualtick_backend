@@ -1,0 +1,28 @@
+1. Create a Project in Google Cloud Console
+    Go to Google Cloud Console (https://console.cloud.google.com/).
+    Click Select a project > New Project.
+    Give your project a name and click Create.
+
+2. Enable the Google Identity API
+    In the project dashboard, go to APIs & Services > Library.
+    Search for "Google Identity Platform API".
+    Click Enable.
+
+3. Configure OAuth Consent Screen
+    Go to APIs & Services > OAuth consent screen.
+    Choose External if your app is for general users, or Internal for your organization's users.
+    Fill in the required details (app name, support email, logo, etc.).
+    Add the necessary Scopes (email, profile, openid).
+    Add your authorized domains (your backend’s domain or localhost during development).
+    Save and continue until the OAuth consent screen is configured.
+
+4. Create OAuth 2.0 Credentials
+    Go to APIs & Services > Credentials > Create Credentials > OAuth Client ID.
+    Select Application Type: Android, iOS, or Web depending on your Flutter app's platform.
+    Fill in the required information:
+        Package name for Android/iOS.
+        Authorized redirect URIs for Web (e.g., http://localhost:8000/complete/google-oauth2/ for Django).
+    Click Create, and you will get Client ID and Client Secret.
+
+
+Before using it. I need enable it from here: https://console.developers.google.com/apis/api/people.googleapis.com/overview?project=PROJECT_ID

@@ -1,0 +1,5 @@
+- Create network:
+    docker network create qualitick-network
+
+- Create postgres container:
+    docker run --name postgres-container --network=qualitick-network -e POSTGRES_USER=db_user -e POSTGRES_PASSWORD=db_password -e POSTGRES_DB=qualitick -p 5432:5432 -d postgres

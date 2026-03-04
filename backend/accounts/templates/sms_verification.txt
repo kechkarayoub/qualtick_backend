@@ -1,0 +1,2 @@
+{% load i18n %}
+{% blocktrans with verification_code as verification_code %}Your verification code is {{verification_code}}. Please use it to confirm your number. Thank you.{% endblocktrans %}

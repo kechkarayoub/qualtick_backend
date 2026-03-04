@@ -1,0 +1,33 @@
+Settings updates:
+    Change those settings variables:
+        NUMBER_MINUTES_BEFORE_PHONE_NUMBER_VERIFICATION_CODE_EXPIRATION, TECHNICAL_SERVICE_EMAIL,
+        DEFAULT_PHONE_NUMBER_COUNTRY_CODE, APPLICATION_NAME, ADDRESS, FRONTEND_ENDPOINT, BACKEND_ENDPOINT,
+        CORS_ORIGIN_WHITELIST, CORS_ORIGIN_ALLOW_ALL, PHONE_NUMBER_VERIFICATION_CODE_QUOTA
+Files structure:
+    Change root folder name from Qualitick to the application name.
+
+Email smtp:
+    Create gmail account for prod and set params in .env file:
+        EMAIL_HOST_USER=""
+        EMAIL_HOST_PASSWORD=""
+        DEFAULT_FROM_EMAIL=""
+    Or use other smtp and set params in .env file:
+        EMAIL_HOST=""
+        EMAIL_PORT=
+        EMAIL_USE_TLS=""
+        EMAIL_HOST_USER=""
+        EMAIL_HOST_PASSWORD=""
+        DEFAULT_FROM_EMAIL=""
+
+Whatsapp:
+    May be good solution: https://waapi.app/user/api-tokens
+
+
+Add or change logo image and icon:
+    To check sent logo in email
+    Logo: backend/static/images/logo.pmg
+
+Check backend/backend/settings/local.py and set appropriate settings in backend/backend/settings/production.py
+
+For websockets:
+    Check CHANNEL_LAYERS in backend/backend/settings/production.py

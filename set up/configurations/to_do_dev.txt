@@ -1,0 +1,17 @@
+- Add .env.example
+- Add permission manage.
+- Notifications && Push notifications.
+- Add translations.
+
+
+
+db_manager
+db_alias='' str
+db_alias or None
+(serializer)
+serializer.save
+serializer.is_valid
+
+
+
+to_login_dict
