@@ -59,7 +59,7 @@ def get_user_from_token(token, db_alias=''): # pylint: disable=too-many-return-s
             return AnonymousUser(), "invalid_token"
         try:
             # Try to fetch the user from the database
-            user = UserRepository.get(id=user_id, db_alias=db_alias)
+            user = UserRepository.get_by_id(user_id, db_alias=db_alias)
             return user, "valid"
         except User.DoesNotExist:
             # If user does not exist, return AnonymousUser

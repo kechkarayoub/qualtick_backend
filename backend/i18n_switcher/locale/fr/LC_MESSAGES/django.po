@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-07-26 12:03+0100\n"
+"POT-Creation-Date: 2026-03-09 22:47+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,22 +17,23 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
 #: templates/i18n_switcher/language_selector.html:4
 msgid "Language"
 msgstr "Langue"
 
-#: views.py:69
+#: views.py:65
 msgid "Language switched successfully"
 msgstr "Langue changée avec succès"
 
-#: views.py:76
+#: views.py:70
 msgid "Unsupported language selected"
 msgstr "Langue non prise en charge sélectionnée"
 
-#: views.py:81
+#: views.py:74
 msgid "Invalid URL for language switch"
 msgstr "URL invalide pour le changement de langue"
 
-#: views.py:86
+#: views.py:78
 msgid "Language switch failed"
 msgstr "Échec du changement de langue"

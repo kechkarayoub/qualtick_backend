@@ -314,7 +314,7 @@ class ThirdPartyAuthTestCase(TestCase):
             self.assertIn('Invalid credentials', response.data.get('message', ''))
 
         # Clean up
-        test_user.delete(using=db_alias or None)
+        test_user.delete()
 
     def test_third_party_signin_language_handling(self):
         """Test language preference handling in third-party sign-in."""
@@ -558,6 +558,14 @@ class SignInViewTest(TestCase):
             'email_or_username': "testuser",
             'password': "password123"
         })
+        if settings.ENABLE_EMAIL_VERIFICATION is True:
+            self.assertEqual(response.status_code, 403)
+            data = json.loads(response.content.decode('utf-8'))
+            self.assertEqual(data.get("email"), self.user.email)
+            self.assertEqual(data.get("user_id"), self.user.id)
+            self.assertFalse(data.get("success"))
+            self.assertTrue(data.get("email_verification_required"))
+            return
         self.assertEqual(response.status_code, 200)
         data = json.loads(response.content.decode('utf-8'))
         self.assertEqual(data.get("user"), self.user.to_login_dict())

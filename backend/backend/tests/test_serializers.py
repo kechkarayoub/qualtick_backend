@@ -10,6 +10,8 @@ This module provides tests for:
 Tests extracted from test_models.py and test_models2.py for better organization.
 """
 
+from uuid import uuid4
+
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import AnonymousUser
 from django.test import TestCase
@@ -31,10 +33,11 @@ class ContactMessageSerializerTest(TestCase):
     def setUp(self):
         """Set up test data."""
         db_alias = get_db_alias()
+        suffix = uuid4().hex[:8]
         self.factory = APIRequestFactory()
         self.user = UserRepository.create_user(
-            username='testuser',
-            email='testuser@example.com',
+            username=f'testuser_{suffix}',
+            email=f'testuser_{suffix}@example.com',
             password='testpassword123',
             current_language='en',
             db_alias=db_alias
@@ -258,10 +261,11 @@ class ContactMessageListSerializerTest(TestCase):
     """Test cases for ContactMessageListSerializer."""
     def setUp(self):
         """Set up test data."""
-        db_alias = get_db_alias()       
+        db_alias = get_db_alias()
+        suffix = uuid4().hex[:8]
         self.user = UserRepository.create_user(
-            username='testusermsgsr',
-            email='testusermsgsr@example.com',
+            username=f'testusermsgsr_{suffix}',
+            email=f'testusermsgsr_{suffix}@example.com',
             password='testpassword123',
             current_language='en',
             db_alias=db_alias
@@ -394,11 +398,12 @@ class ContactMessageSerializerIntegrationTest(TestCase):
 
     def setUp(self):
         """Set up test data."""   
-        db_alias = get_db_alias()     
+        db_alias = get_db_alias()
+        suffix = uuid4().hex[:8]
         self.client = APIClient()
         self.user = UserRepository.create_user(
-            username='testusermsgsrint',
-            email='testusermsgsrint@example.com',
+            username=f'testusermsgsrint_{suffix}',
+            email=f'testusermsgsrint_{suffix}@example.com',
             password='testpassword123',
             current_language='en',
             db_alias=db_alias

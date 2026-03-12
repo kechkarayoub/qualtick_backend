@@ -1,6 +1,7 @@
 """Test channels jwt middleware"""
 
 import asyncio
+from uuid import uuid4
 
 from channels.db import database_sync_to_async
 from django.contrib.auth import get_user_model
@@ -21,8 +22,10 @@ class GetUserFromTokenTests(TestCase):
         """Test valid token returns correct user."""
         async def run():
             db_alias = get_db_alias()
+            suffix = uuid4().hex[:8]
             user = await database_sync_to_async(UserRepository.create_user)(
-                email='testuser@example.com', password='testpass123', username='testuser',
+                email=f'testuser_{suffix}@example.com', password='testpass123',
+                username=f'testuser_{suffix}',
                 db_alias=db_alias)
             refresh_token = await database_sync_to_async(RefreshToken.for_user)(user)
             access_token = refresh_token.access_token
@@ -45,8 +48,10 @@ class GetUserFromTokenTests(TestCase):
         """Test token with non-existent user returns AnonymousUser."""
         async def run():
             db_alias = get_db_alias()
+            suffix = uuid4().hex[:8]
             user = await database_sync_to_async(UserRepository.create_user)(
-                email='testuser2@example.com', password='testpass123', username='testuser2',
+                email=f'testuser2_{suffix}@example.com', password='testpass123',
+                username=f'testuser2_{suffix}',
                 db_alias=db_alias)
             refresh_token = await database_sync_to_async(RefreshToken.for_user)(user)
             access_token = refresh_token.access_token
@@ -60,9 +65,10 @@ class GetUserFromTokenTests(TestCase):
         """Test blacklisted token returns AnonymousUser."""
         async def run():
             db_alias = get_db_alias()
+            suffix = uuid4().hex[:8]
             user = await database_sync_to_async(UserRepository.create_user)(
-                email='blacklistuser@example.com', password='testpass123',
-                username='blacklistuser', db_alias=db_alias)
+                email=f'blacklistuser_{suffix}@example.com', password='testpass123',
+                username=f'blacklistuser_{suffix}', db_alias=db_alias)
             refresh_token = await database_sync_to_async(RefreshToken.for_user)(user)
             access_token = refresh_token.access_token
             # Get the outstanding refresh token (not access token)

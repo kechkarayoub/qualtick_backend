@@ -12,6 +12,7 @@ from unittest.mock import patch
 
 from decouple import config
 from django.conf import settings
+from django.core.cache import cache
 from django.test import TestCase, RequestFactory
 from django.utils.translation import gettext_lazy as _
 from rest_framework import status
@@ -98,6 +99,7 @@ class ViewsTestCase(TestCase):
     def setUp(self):
         """Set up test fixtures."""
         self.factory = RequestFactory()
+        cache.clear()
 
     @patch('backend.views.GeolocationService.get_client_ip')
     @patch('backend.views.GeolocationService.get_geolocation_data')
@@ -153,6 +155,7 @@ class GeolocationViewTests(TestCase):
     def setUp(self):
         """Set up test fixtures."""
         self.factory = RequestFactory()
+        cache.clear()
 
     @patch("requests.get")
     def test_success(self, mock_get):

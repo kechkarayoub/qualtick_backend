@@ -125,7 +125,7 @@ class BaseRepository:
         """
         obj = cls.get_by_id(obj_id, db_alias=db_alias)
         if obj:
-            obj.delete(using=db_alias or None)
+            obj.delete()
             return True
         return False
     
@@ -141,7 +141,7 @@ class BaseRepository:
         Returns:
             True if exists, False otherwise
         """
-        return cls.model.objects.using(using=db_alias or None).filter(**filters).exists()
+        return cls.model.objects.using(db_alias or None).filter(**filters).exists()
     
     @classmethod
     def count(cls, db_alias: str = '', **filters) -> int:
@@ -169,8 +169,27 @@ class BaseRepository:
         Returns:
             List of created model instances
         """
-        instances = [cls.model(**obj) for obj in objects]
+        instances: List[models.Model] = []
+        for obj in objects:
+            # Accept either dicts or model instances
+            if isinstance(obj, dict):
+                instances.append(cls.model(**obj))
+            elif isinstance(obj, models.Model):
+                # ensure the instance is of the expected model class
+                if obj.__class__ is cls.model or isinstance(obj, cls.model):
+                    instances.append(obj)
+                else:
+                    raise TypeError(f"bulk_create item has wrong model type: {obj.__class__}")
+            else:
+                raise TypeError("bulk_create expects a list of dicts or model instances")
         return cls.model.objects.using(db_alias or None).bulk_create(instances)
+
+    @classmethod
+    def select_related(cls, *fields, db_alias: str = '') -> models.QuerySet:
+        """
+        Return a queryset with select_related applied.
+        """
+        return cls.model.objects.using(db_alias or None).select_related(*fields)
     
     @classmethod
     def bulk_update(cls, objects: List[models.Model], fields: List[str], db_alias: str = '') -> int:

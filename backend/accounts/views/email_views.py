@@ -57,7 +57,8 @@ class SendVerificationEmailLinkView(APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
         # Fetch the user or return 400 error if not found
-        user = get_object_or_404(User, pk=user_id, using=db_alias or None)
+        user_qs = User.objects.using(db_alias or None)
+        user = get_object_or_404(user_qs, pk=user_id)
         if user.is_user_email_validated is True:
             return Response(
                 {
@@ -67,9 +68,9 @@ class SendVerificationEmailLinkView(APIView):
                 },
                 status=status.HTTP_401_UNAUTHORIZED
             )
-        send_email_response = EmailVerificationService.send_verification_email(email=user.email)
+        code_response, _uid_token = EmailVerificationService.send_verification_email(user)
         # Check if email was successfully sent
-        if '1 verification email are sent,' not in send_email_response:
+        if code_response != 200:
             return Response({
                 "message": _("Email not sent. Please contact the technical team to "
                              "resolve your issue."),

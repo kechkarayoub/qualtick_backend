@@ -35,9 +35,11 @@ class ContactMessageModelTest(TestCase):
     def setUp(self):
         """Set up test data."""
         db_alias = get_db_alias()
+        from uuid import uuid4
+        suffix = uuid4().hex[:8]
         self.user = UserRepository.create_user(
-            username='testuser',
-            email='testuser@example.com',
+            username=f'testuser_{suffix}',
+            email=f'testuser_{suffix}@example.com',
             password='testpassword123',
             current_language='en',
             db_alias=db_alias
@@ -173,7 +175,7 @@ class ContactMessageModelTest(TestCase):
         # Verify the user is associated
         self.assertEqual(contact.user, self.user)
         # Delete the user
-        self.user.delete(using=db_alias or None)
+        self.user.delete()
         # Refresh the contact message and check user is set to NULL
         contact.refresh_from_db(using=db_alias or None)
         self.assertIsNone(contact.user)
@@ -372,15 +374,17 @@ class ContactMessageQuerySetTest(TestCase):
     def setUp(self):
         """Set up test data."""
         db_alias = get_db_alias()
+        from uuid import uuid4
+        suffix = uuid4().hex[:8]
         self.user1 = UserRepository.create_user(
-            username='user1',
-            email='user1@example.com',
+            username=f'user1_{suffix}',
+            email=f'user1_{suffix}@example.com',
             password='password123',
             db_alias=db_alias,
         )
         self.user2 = UserRepository.create_user(
-            username='user2',
-            email='user2@example.com',
+            username=f'user2_{suffix}',
+            email=f'user2_{suffix}@example.com',
             password='password123',
             db_alias=db_alias,
         )
@@ -488,7 +492,7 @@ class ContactMessageQuerySetTest(TestCase):
         """Test filtering contact messages by date range."""
         # Clear any existing contacts to ensure clean state
         db_alias = get_db_alias()
-        ContactMessageRepository.all(db_alias=db_alias).delete(using=db_alias or None)
+        ContactMessageRepository.all(db_alias=db_alias).delete()
         # Create test contacts within this test method
         _contact1 = ContactMessageRepository.create(
             name='Alice Smith',
@@ -583,11 +587,13 @@ class ContactMessagePerformanceTest(TestCase):
         """Set up test data."""
         # Create multiple users and contact messages for performance testing
         db_alias = get_db_alias()
+        from uuid import uuid4
+        suffix = uuid4().hex[:8]
         self.users = []
         for i in range(10):
             user = UserRepository.create_user(
-                username=f'user{i}',
-                email=f'user{i}@example.com',
+                username=f'user{i}_{suffix}',
+                email=f'user{i}_{suffix}@example.com',
                 password='password123',
                 db_alias=db_alias,
             )
@@ -656,7 +662,7 @@ class ContactMessagePerformanceTest(TestCase):
                 __ = contact.user.username if contact.user else None
         # Query with select_related (should make only 1 query)
         with self.assertNumQueries(1):
-            contacts = ContactMessageRepository.select_related('user').all(db_alias=db_alias)
+            contacts = ContactMessageRepository.select_related('user', db_alias=db_alias)
             for contact in contacts:
                 __ = contact.user.username if contact.user else None
 
@@ -667,25 +673,27 @@ class ContactMessageAdminTest(TestCase):
     def setUp(self):
         """Set up test data."""
         db_alias = get_db_alias()
+        from uuid import uuid4
+        suffix = uuid4().hex[:8]
         self.site = AdminSite()
         self.admin = ContactMessageAdmin(ContactMessage, self.site)
         # Create test users
         self.superuser = UserRepository.create_superuser(
             db_alias=db_alias,
-            username='admin',
-            email='admin@example.com',
+            username=f'admin_{suffix}',
+            email=f'admin_{suffix}@example.com',
             password='adminpassword123'
         )
         self.staff_user = UserRepository.create_user(
-            username='staff',
-            email='staff@example.com',
+            username=f'staff_{suffix}',
+            email=f'staff_{suffix}@example.com',
             password='staffpassword123',
             is_staff=True,
             db_alias=db_alias,
         )
         self.regular_user = UserRepository.create_user(
-            username='user',
-            email='user@example.com',
+            username=f'user_{suffix}',
+            email=f'user_{suffix}@example.com',
             password='userpassword123',
             current_language='en',
             db_alias=db_alias,

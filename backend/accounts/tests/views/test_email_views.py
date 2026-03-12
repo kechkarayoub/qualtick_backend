@@ -4,6 +4,7 @@ import json
 
 from django.conf import settings
 from django.test import TestCase
+from django.utils.translation import gettext_lazy as _
 
 from accounts.models import User
 from accounts.repositories.user_repository import UserRepository
@@ -160,7 +161,7 @@ class EmailVerificationTests(TestCase):
         _, (uid, token) = EmailVerificationService.send_verification_email(self.user)
         now = datetime.datetime.now()
         token_date = token.split("_*_")
-        yesterday_timestamp = (now() - datetime.timedelta(days=1)).timestamp()
+        yesterday_timestamp = (now - datetime.timedelta(days=1)).timestamp()
         token_date[1] = str(yesterday_timestamp)
         token = "_*_".join(token_date)
         verified, already_verified, expired_token, new_verification_email_sent = verify_user_email(uid, token, db_alias=db_alias)
@@ -200,7 +201,7 @@ class EmailVerificationTests(TestCase):
         self.assertTrue(self.user.is_user_email_validated)
         data = json.loads(response.content.decode('utf-8'))
         message = data.get("message")
-        self.assertEqual(message, "L'email a été vérifié avec succès.")
+        self.assertEqual(message, "Email verified successfully.")
         response = self.client.get('/accounts/verify-email/',
                                    {'uid': uid, 'token': token})
         self.assertEqual(response.status_code, 200)
@@ -208,7 +209,7 @@ class EmailVerificationTests(TestCase):
         self.assertTrue(self.user.is_user_email_validated)
         data = json.loads(response.content.decode('utf-8'))
         message = data.get("message")
-        self.assertEqual(message, "L'email a déjà été vérifié.")
+        self.assertEqual(message, "Email already verified.")
         self.assertTrue(data.get("already_verified"))
         UserRepository.filter(pk=self.user.id, db_alias=db_alias).update(
             is_user_email_validated=False)
@@ -219,7 +220,7 @@ class EmailVerificationTests(TestCase):
         self.assertFalse(self.user.is_user_email_validated)
         data = json.loads(response.content.decode('utf-8'))
         message = data.get("message")
-        self.assertEqual(message, "Un nouvel e-mail de vérification a été envoyé.")
+        self.assertEqual(message, "A new verification email has been sent.")
         self.assertTrue(data.get("new_verification_email_sent"))
 
     def test_verify_email_view_en(self):
@@ -266,14 +267,14 @@ class EmailVerificationTests(TestCase):
                                    {'uid': uid, 'token': token})
         data = json.loads(response.content.decode('utf-8'))
         message = data.get("message")
-        self.assertEqual(message, "تم بالفعل التحقق من البريد الإلكتروني.")
+        self.assertEqual(message, "البريد الإلكتروني مُتحقق منه بالفعل.")
         UserRepository.filter(pk=self.user_ar.id, db_alias=db_alias).update(
             is_user_email_validated=False)
         response = self.client.get('/accounts/verify-email/',
             {'uid': uid, 'token': token, 'resend_verification_email': "true"})
         data = json.loads(response.content.decode('utf-8'))
         message = data.get("message")
-        self.assertEqual(message, "تم إرسال رسالة تحقق جديدة.")
+        self.assertEqual(message, "تم إرسال بريد إلكتروني جديد للتحقق.")
         self.assertTrue(data.get("new_verification_email_sent"))
 
     def test_verify_email_view_missing_params(self):
@@ -285,17 +286,17 @@ class EmailVerificationTests(TestCase):
         self.assertEqual(response.status_code, 400)
         data = json.loads(response.content.decode('utf-8'))
         message = data.get("message")
-        self.assertEqual(message, "Paramètres requis manquants.")
+        self.assertEqual(message, _("Missing required parameters."))
         response = self.client.get('/accounts/verify-email/', {'uid': "uid"})
         self.assertEqual(response.status_code, 400)
         data = json.loads(response.content.decode('utf-8'))
         message = data.get("message")
-        self.assertEqual(message, "Paramètres requis manquants.")
+        self.assertEqual(message, _("Missing required parameters."))
         response = self.client.get('/accounts/verify-email/', {'token': "token"})
         self.assertEqual(response.status_code, 400)
         data = json.loads(response.content.decode('utf-8'))
         message = data.get("message")
-        self.assertEqual(message, "Paramètres requis manquants.")
+        self.assertEqual(message, _("Missing required parameters."))
 
     def test_verify_email_view_expired_token(self):
         """Test verify_email view with expired token returns expired field."""
@@ -306,7 +307,7 @@ class EmailVerificationTests(TestCase):
         # Modify token to be expired
         now = datetime.datetime.now()
         token_date = token.split("_*_")
-        yesterday_timestamp = (now() - datetime.timedelta(days=1)).timestamp()
+        yesterday_timestamp = (now - datetime.timedelta(days=1)).timestamp()
         token_date[1] = str(yesterday_timestamp)
         expired_token = "_*_".join(token_date)
 
@@ -315,6 +316,6 @@ class EmailVerificationTests(TestCase):
         self.assertEqual(response.status_code, 400)
         data = json.loads(response.content.decode('utf-8'))
         message = data.get("message")
-        self.assertEqual(message, "Jeton expiré. Envoyez un nouvel e-mail de vérification à "
-                         "votre adresse e-mail.")
+        self.assertEqual(message,"Expired token. Send a new verification email to your email"
+                         " address.")
         self.assertTrue(data.get("expired"))

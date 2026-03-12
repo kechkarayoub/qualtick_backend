@@ -6,6 +6,7 @@ Tests for backend/services.py - all service classes.
 
 import asyncio
 from datetime import datetime, timezone
+from uuid import uuid4
 from unittest.mock import patch, Mock
 from zoneinfo import ZoneInfo
 
@@ -64,7 +65,7 @@ class GeolocationServiceTestCase(TestCase):
         with self.assertRaises(GeolocationException):
             GeolocationService.get_client_ip(request)
 
-    @patch('backend.services.get_geolocation_info')
+    @patch('backend.services.services.get_geolocation_info')
     def test_geolocation_service_get_data(self, mock_geo_info):
         """Test geolocation data retrieval."""
         mock_geo_info.return_value = {
@@ -77,7 +78,7 @@ class GeolocationServiceTestCase(TestCase):
         self.assertEqual(data['countryCode'], 'FR')
         mock_geo_info.assert_called_once_with('192.168.1.1', 'country,countryCode')
 
-    @patch('backend.services.get_geolocation_info')
+    @patch('backend.services.services.get_geolocation_info')
     def test_geolocation_service_failure(self, mock_geo_info):
         """Test geolocation service failure handling."""
         mock_geo_info.return_value = {
@@ -87,7 +88,7 @@ class GeolocationServiceTestCase(TestCase):
         with self.assertRaises(GeolocationException):
             GeolocationService.get_geolocation_data('invalid-ip')
 
-    @patch('backend.services.get_geolocation_info')
+    @patch('backend.services.services.get_geolocation_info')
     def test_geolocation_service_caching(self, mock_geo_info):
         """Test geolocation data caching."""
         mock_geo_info.return_value = {
@@ -103,7 +104,7 @@ class GeolocationServiceTestCase(TestCase):
 
     def test_geolocation_service_without_cache(self):
         """Test geolocation service without caching."""
-        with patch('backend.services.get_geolocation_info') as mock_geo:
+        with patch('backend.services.services.get_geolocation_info') as mock_geo:
             mock_geo.return_value = {
                 'country': 'France',
                 'countryCode': 'FR'
@@ -117,7 +118,7 @@ class GeolocationServiceTestCase(TestCase):
 
     def test_geolocation_service_exception_handling(self):
         """Test geolocation service exception handling."""
-        with patch('backend.services.get_geolocation_info') as mock_geo:
+        with patch('backend.services.services.get_geolocation_info') as mock_geo:
             mock_geo.side_effect = Exception("Network error")
             with self.assertRaises(GeolocationException):
                 GeolocationService.get_geolocation_data('192.168.1.1')
@@ -132,7 +133,7 @@ class MessageServiceTestCase(TestCase):
     def tearDown(self):
         cache.clear()
 
-    @patch('backend.services.send_whatsapp')
+    @patch('backend.services.services.send_whatsapp')
     def test_message_service_send_verification_code(self, mock_whatsapp):
         """Test verification code sending."""
         mock_whatsapp.return_value = {
@@ -143,7 +144,7 @@ class MessageServiceTestCase(TestCase):
         self.assertTrue(result['all_verification_codes_sent'])
         self.assertEqual(result['nbr_verification_codes_sent'], 1)
 
-    @patch('backend.services.send_whatsapp')
+    @patch('backend.services.services.send_whatsapp')
     def test_message_service_send_verification_code_failure(self, mock_whatsapp):
         """Test verification code sending failure."""
         mock_whatsapp.return_value = {
@@ -153,7 +154,7 @@ class MessageServiceTestCase(TestCase):
         with self.assertRaises(MessageSendException):
             MessageService.send_verification_code('+1234567890', '123456')
 
-    @patch('backend.services.send_whatsapp')
+    @patch('backend.services.services.send_whatsapp')
     def test_message_service_send_bulk_message(self, mock_whatsapp):
         """Test bulk message sending."""
         mock_whatsapp.return_value = {
@@ -165,7 +166,7 @@ class MessageServiceTestCase(TestCase):
         self.assertTrue(result['all_verification_codes_sent'])
         self.assertEqual(result['nbr_verification_codes_sent'], 2)
 
-    @patch('backend.services.send_sms')
+    @patch('backend.services.services.send_sms')
     def test_message_service_sms_method(self, mock_send_sms):
         """Test message service with SMS method."""
         mock_send_sms.return_value = {
@@ -178,7 +179,7 @@ class MessageServiceTestCase(TestCase):
         self.assertTrue(result['all_verification_codes_sent'])
         mock_send_sms.assert_called_once()
 
-    @patch('backend.services.send_sms')
+    @patch('backend.services.services.send_sms')
     def test_message_service_bulk_sms(self, mock_send_sms):
         """Test bulk SMS sending."""
         mock_send_sms.return_value = {
@@ -193,14 +194,14 @@ class MessageServiceTestCase(TestCase):
 
     def test_message_service_exception_handling(self):
         """Test message service exception handling."""
-        with patch('backend.services.send_whatsapp') as mock_whatsapp:
+        with patch('backend.services.services.send_whatsapp') as mock_whatsapp:
             mock_whatsapp.side_effect = Exception("WhatsApp API error")
             with self.assertRaises(MessageSendException):
                 MessageService.send_verification_code('+1234567890', '123456')
 
     def test_message_service_bulk_exception_handling(self):
         """Test bulk message service exception handling."""
-        with patch('backend.services.send_whatsapp') as mock_whatsapp:
+        with patch('backend.services.services.send_whatsapp') as mock_whatsapp:
             mock_whatsapp.side_effect = Exception("WhatsApp API error")
             with self.assertRaises(MessageSendException):
                 MessageService.send_bulk_message(['+1234567890'], 'Test message')
@@ -324,7 +325,7 @@ class CacheServiceTestCase(TestCase):
     def test_cache_service_invalidate_pattern_with_error(self):
         """Test cache service pattern invalidation with error handling."""
         # This tests the error handling in invalidate_pattern
-        with patch('backend.services.cache.delete_many') as mock_delete:
+        with patch('backend.services.services.cache.delete_many') as mock_delete:
             mock_delete.side_effect = Exception("Cache error")
             # Should not raise an exception
             CacheService.invalidate_pattern('test_*')
@@ -338,9 +339,10 @@ class ContactMessageServiceTestCase(TestCase):
     def setUp(self):
         """Set up test data."""
         db_alias = get_db_alias()
+        suffix = uuid4().hex[:8]
         self.user = UserRepository.create_user(
-            username='testuser',
-            email='test@example.com',
+            username=f'testuser_{suffix}',
+            email=f'test_{suffix}@example.com',
             password='testpass123',
             db_alias=db_alias
         )
@@ -459,7 +461,7 @@ class ServiceIntegrationTestCase(TestCase):
     def tearDown(self):
         cache.clear()
 
-    @patch('backend.services.get_geolocation_info')
+    @patch('backend.services.services.get_geolocation_info')
     def test_geolocation_caching_integration(self, mock_geo_info):
         """Test geolocation data caching integration."""
         mock_geo_info.return_value = {
@@ -476,10 +478,10 @@ class ServiceIntegrationTestCase(TestCase):
     def test_message_and_validation_integration(self):
         """Test message service with validation."""
         # Test with valid phone number
-        valid_phone = '+1234567890'
+        valid_phone = '+212612345678'
         self.assertTrue(ValidationService.validate_phone_number(valid_phone))
 
-        with patch('backend.services.send_whatsapp') as mock_whatsapp:
+        with patch('backend.services.services.send_whatsapp') as mock_whatsapp:
             mock_whatsapp.return_value = {
                 'nbr_verification_codes_sent': 1,
                 'all_verification_codes_sent': True

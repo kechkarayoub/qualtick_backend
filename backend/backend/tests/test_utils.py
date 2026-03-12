@@ -5,6 +5,7 @@ Consolidated from test_comprehensive.py, test_functionalities.py, and test_addit
 
 import os
 from datetime import datetime, timezone
+from uuid import uuid4
 from unittest.mock import Mock, patch
 from zoneinfo import ZoneInfo
 
@@ -41,14 +42,15 @@ class UtilsTestCase(TestCase):
     def setUp(self):
         """Set up test data."""
         db_alias = get_db_alias()
+        suffix = uuid4().hex[:8]
         self.factory = RequestFactory()
         self.user = UserRepository.create_user(
-            email="testuser@example.com",
+            email=f"testuser_{suffix}@example.com",
             first_name="First name",
             last_name="Last name",
             password="testpassword123",
             user_phone_number_to_verify="+212612505257",
-            username="testuser",
+            username=f"testuser_{suffix}",
             db_alias=db_alias,
         )
 
@@ -79,8 +81,10 @@ class UtilsTestCase(TestCase):
         """Test the `execute_native_query` function."""
         db_alias = get_db_alias()
         # Test SELECT query
-        query_get_users = "SELECT * FROM backend_user WHERE is_active=True;"
-        users = execute_native_query(query_get_users)
+        query_get_users = (
+            f"SELECT * FROM backend_user WHERE email='{self.user.email}' AND is_active=True;"
+        )
+        users = execute_native_query(query_get_users, db_alias=db_alias)
         self.assertEqual(len(users), 1)
 
         # Test INSERT query

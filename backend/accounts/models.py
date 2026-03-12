@@ -5,7 +5,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from backend.utils import PHONE_NUMBER_VERIFICATION_METHOD, get_all_timezones
 
-from accounts.utils import GENDERS_CHOICES
+from accounts.constants import GENDERS_CHOICES
 
 # Theme choices
 THEME_CHOICES = [
@@ -118,3 +118,30 @@ class User(AbstractUser):
     def get_user_timezone(self):
         """Returns the user's timezone."""
         return getattr(self, 'user_timezone', settings.TIME_ZONE)
+    # noinspection PyMethodMayBeStatic
+    def to_login_dict(self):
+        """
+        Return a dictionary representation of the user for login responses.
+
+        Keys are asserted by tests and must match expected names and count.
+        """
+        return {
+            "current_language": self.current_language,
+            "email": self.email,
+            "first_name": self.first_name,
+            "id": self.id,
+            "is_user_phone_number_validated": self.is_user_phone_number_validated,
+            "last_name": self.last_name,
+            "user_address": self.user_address,
+            "user_birthday": self.user_birthday,
+            "user_cin": self.user_cin,
+            "user_country": self.user_country,
+            "user_gender": self.user_gender,
+            "user_image_url": self.user_image_url,
+            "user_initials_bg_color": self.user_initials_bg_color or "",
+            "user_phone_number": self.user_phone_number,
+            "user_phone_number_to_verify": self.user_phone_number_to_verify,
+            "user_timezone": self.user_timezone,
+            "user_theme": self.user_theme,
+            "username": self.username,
+        }

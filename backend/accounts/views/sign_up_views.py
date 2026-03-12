@@ -126,40 +126,36 @@ class SignUpThirdPartyView(APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
         email_verified = False
-        try:
-            # Google OAuth token validation
-            if type_third_party == "google":
-                try:
-                    request_adapter = requests.Request()
-                    google_client_id = getattr(
-                        settings, 'GOOGLE_SIGN_IN_WEB_CLIENT_ID', None)
-                    idinfo = id_token.verify_oauth2_token(token_value, request_adapter,
-                                                          google_client_id)
-                    verified_email = idinfo.get('email')
-                    email_verified = idinfo.get('email_verified', False)
-                    if verified_email == email and email_verified:
-                        email = verified_email
-                        logger.info(
-                            "Successfully verified Google OAuth token for email: %s", 
-                            email)
-                    else:
-                        logger.warning(
-                            "Email mismatch or not verified: provided=%s, token=%s, "
-                            "verified=%s", email, verified_email, email_verified)
-                        email = None
-                except Exception as google_error:
-                    logger.error(
-                        "Google OAuth token verification failed: %s", 
-                        str(google_error))
+        # Google OAuth token validation
+        if type_third_party == "google":
+            try:
+                request_adapter = requests.Request()
+                google_client_id = getattr(
+                    settings, 'GOOGLE_SIGN_IN_WEB_CLIENT_ID', None)
+                idinfo = id_token.verify_oauth2_token(token_value, request_adapter,
+                                                      google_client_id)
+                verified_email = idinfo.get('email')
+                email_verified = idinfo.get('email_verified', False)
+                if verified_email == email and email_verified:
+                    email = verified_email
+                    logger.info(
+                        "Successfully verified Google OAuth token for email: %s",
+                        email)
+                else:
+                    logger.warning(
+                        "Email mismatch or not verified: provided=%s, token=%s, "
+                        "verified=%s", email, verified_email, email_verified)
                     email = None
-            else:
-                # Placeholder for other providers
-                logger.warning(
-                    "Third-party provider '%s' not implemented yet", 
-                    type_third_party)
+            except Exception as google_error:
+                logger.error(
+                    "Google OAuth token verification failed: %s",
+                    str(google_error))
                 email = None
-        except Exception as e:
-            logger.error("Unexpected error during token verification: %s", str(e))
+        else:
+            # Placeholder for other providers
+            logger.warning(
+                "Third-party provider '%s' not implemented yet",
+                type_third_party)
             email = None
         if not email_verified:
             return Response({

@@ -14,9 +14,10 @@ from rest_framework_simplejwt.authentication import \
 from rest_framework_simplejwt.token_blacklist.models import (BlacklistedToken,
                                                              OutstandingToken)
 
+from backend.utils import get_db_alias
+
 logger = logging.getLogger(__name__)
 User = get_user_model()
-from backend.utils import get_db_alias
 
 
 class JWTAuthentication(BaseJWTAuthentication):

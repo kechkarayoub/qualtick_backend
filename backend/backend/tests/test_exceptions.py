@@ -43,21 +43,21 @@ class ErrorHandlingTestCase(TestCase):
 
     def test_geolocation_service_exception_handling(self):
         """Test geolocation service exception handling."""
-        with patch('backend.services.get_geolocation_info') as mock_geo:
-            mock_geo.side_effect = Exception("Network error")
+        with patch('backend.services.services.get_geolocation_info') as mock_geo:
+            mock_geo.side_effect = GeolocationException("Network error")
             with self.assertRaises(GeolocationException):
                 GeolocationService.get_geolocation_data('192.168.1.1')
 
     def test_message_service_exception_handling(self):
         """Test message service exception handling."""
-        with patch('backend.services.send_whatsapp') as mock_whatsapp:
+        with patch('backend.services.services.send_whatsapp') as mock_whatsapp:
             mock_whatsapp.side_effect = Exception("WhatsApp API error")
             with self.assertRaises(MessageSendException):
                 MessageService.send_verification_code('+1234567890', '123456')
 
     def test_message_service_bulk_exception_handling(self):
         """Test bulk message service exception handling."""
-        with patch('backend.services.send_whatsapp') as mock_whatsapp:
+        with patch('backend.services.services.send_whatsapp') as mock_whatsapp:
             mock_whatsapp.side_effect = Exception("WhatsApp API error")
             with self.assertRaises(MessageSendException):
                 MessageService.send_bulk_message(['+1234567890'], 'Test message')
@@ -66,7 +66,7 @@ class ErrorHandlingTestCase(TestCase):
 class GeolocationServiceExceptionTestCase(TestCase):
     """Test GeolocationService exception scenarios."""
 
-    @patch('backend.services.get_geolocation_info')
+    @patch('backend.services.services.get_geolocation_info')
     def test_geolocation_service_failure(self, mock_geo_info):
         """Test geolocation service failure handling."""
         mock_geo_info.return_value = {
@@ -91,7 +91,7 @@ class GeolocationServiceExceptionTestCase(TestCase):
 class MessageServiceExceptionTestCase(TestCase):
     """Test MessageService exception scenarios."""
 
-    @patch('backend.services.send_whatsapp')
+    @patch('backend.services.services.send_whatsapp')
     def test_message_service_send_verification_code_failure(self, mock_whatsapp):
         """Test verification code sending failure."""
         mock_whatsapp.return_value = {
@@ -101,7 +101,7 @@ class MessageServiceExceptionTestCase(TestCase):
         with self.assertRaises(MessageSendException):
             MessageService.send_verification_code('+1234567890', '123456')
 
-    @patch('backend.services.send_sms')
+    @patch('backend.services.services.send_sms')
     def test_message_service_sms_exception(self, mock_send_sms):
         """Test SMS sending exception handling."""
         mock_send_sms.side_effect = Exception("SMS API error")
@@ -110,7 +110,7 @@ class MessageServiceExceptionTestCase(TestCase):
                 '+1234567890', '123456', method='sms'
             )
 
-    @patch('backend.services.send_sms')
+    @patch('backend.services.services.send_sms')
     def test_message_service_bulk_sms_exception(self, mock_send_sms):
         """Test bulk SMS exception handling."""
         mock_send_sms.side_effect = Exception("SMS API error")

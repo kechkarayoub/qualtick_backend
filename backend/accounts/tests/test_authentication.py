@@ -90,8 +90,7 @@ class CustomJWTAuthenticationTests(TestCase):
         self.assertTrue(is_logged_out)
     def tearDown(self):
         """Clean up test data."""
-        db_alias = get_db_alias()
-        self.user.delete(using=db_alias or None)
+        self.user.delete()
 
 if __name__ == '__main__':
     unittest.main()

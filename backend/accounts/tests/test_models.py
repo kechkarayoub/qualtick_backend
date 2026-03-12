@@ -15,13 +15,14 @@ from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from rest_framework.test import APITestCase
 
+from accounts.constants import GENDERS_CHOICES
 from accounts.exceptions import (AuthenticationException, EmailSendingException,
                                  PhoneVerificationException, UserRegistrationException)
 from accounts.models import User
 from accounts.repositories.user_repository import UserRepository
 from accounts.serializers import UserSerializer
 from accounts.services import UserService
-from accounts.utils import (GENDERS_CHOICES, validate_password_reset_token,
+from accounts.utils import (validate_password_reset_token,
                             send_password_reset_email)
 from backend.utils import get_db_alias
 

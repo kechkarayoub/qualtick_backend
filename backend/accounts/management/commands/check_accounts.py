@@ -99,10 +99,18 @@ class Command(BaseCommand):
             self.stdout.write(
                 self.style.ERROR('✗ Custom user model not configured correctly')
             )
+        self.stdout.write(
+            self.style.SUCCESS('ENABLE_EMAIL_VERIFICATION: True') if \
+                settings.ENABLE_EMAIL_VERIFICATION else \
+            self.style.ERROR('ENABLE_EMAIL_VERIFICATION: False')
+        )
+        self.stdout.write(
+            self.style.SUCCESS('ENABLE_PHONE_NUMBER_VERIFICATION: True') if \
+                settings.ENABLE_PHONE_NUMBER_VERIFICATION else \
+            self.style.ERROR('ENABLE_PHONE_NUMBER_VERIFICATION: False')
+        )
     def _check_user_model(self, verbose, db_alias=''):
         """Check user model structure."""
-        if verbose:
-            self.stdout.write('\n👤 Checking User model')
         self.stdout.write('\n👤 Checking user model...')
         try:
             # Check if we can query the User model
@@ -154,7 +162,7 @@ class Command(BaseCommand):
             if verbose:
                 self.stdout.write(f'  Email backend: {settings.EMAIL_BACKEND}')
                 self.stdout.write(f'  From email: {settings.DEFAULT_FROM_EMAIL}')
-                self.stdout.write(f'  Email host: {settings.EMAIL_HOST}')
+                self.stdout.write(f'  EMAIL_HOST: {settings.EMAIL_HOST}')
             self.stdout.write(
                 self.style.SUCCESS('✓ Email configuration appears valid')
             )

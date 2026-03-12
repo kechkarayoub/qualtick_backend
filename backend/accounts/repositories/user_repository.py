@@ -28,10 +28,7 @@ class UserRepository(BaseRepository):
         Returns:
             User object or None
         """
-        try:
-            return cls.model.objects.using(db_alias or None).get(username__iexact=username)
-        except cls.model.DoesNotExist:
-            return None
+        return cls.model.objects.using(db_alias or None).get(username__iexact=username)
     
     @classmethod
     def get_by_email(cls, email: str, db_alias: str = '') -> Optional[User]:
@@ -45,10 +42,7 @@ class UserRepository(BaseRepository):
         Returns:
             User object or None
         """
-        try:
-            return cls.model.objects.using(db_alias or None).get(email__iexact=email)
-        except cls.model.DoesNotExist:
-            return None
+        return cls.model.objects.using(db_alias or None).get(email__iexact=email)
     
     @classmethod
     def get_by_phone_number(cls, phone_number: str, db_alias: str = '') -> Optional[User]:
@@ -297,7 +291,8 @@ class UserRepository(BaseRepository):
         Returns:
             Created user instance
         """
-        return cls.model.objects.using(db_alias or None).create_user(
+        manager = cls.model.objects.db_manager(db_alias) if db_alias else cls.model.objects
+        return manager.create_user(
             username=username,
             email=email,
             password=password,
@@ -319,7 +314,8 @@ class UserRepository(BaseRepository):
         Returns:
             Created superuser instance
         """
-        return cls.model.objects.using(db_alias or None).create_superuser(
+        manager = cls.model.objects.db_manager(db_alias) if db_alias else cls.model.objects
+        return manager.create_superuser(
             username=username,
             email=email,
             password=password,

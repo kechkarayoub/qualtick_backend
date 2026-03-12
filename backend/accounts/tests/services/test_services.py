@@ -169,8 +169,8 @@ class EmailVerificationServiceTest(TestCase):
     def test_send_verification_email_service_failure(self, mock_send):
         """Test email verification sending failure through service."""
         mock_send.side_effect = Exception("SMTP Error")
-        with self.assertRaises(EmailSendingException):
-            self.email_service.send_verification_email(self.user)
+        code_status, _ = self.email_service.send_verification_email(self.user)
+        self.assertTrue(code_status == 500)
     def test_verify_email_token_service_success(self):
         """Test successful email token verification through service."""
         db_alias = get_db_alias()
@@ -201,12 +201,12 @@ class PhoneVerificationServiceTest(TestCase):
             user_phone_number='+1234567890',
             db_alias=db_alias,
         )
-    @patch('accounts.services.send_phone_message')
+    @patch('accounts.services.services.send_phone_message')
     def test_send_verification_code_service_success(self, mock_send_sms):
         """Test successful verification code sending through service."""
         db_alias = get_db_alias()
         mock_send_sms.return_value = True
-        code = self.phone_service.send_verification_code(self.userl, db_alias=db_alias)
+        code = self.phone_service.send_verification_code(self.user, db_alias=db_alias)
         self.assertIsInstance(code, str)
         self.assertEqual(len(code), 6)  # Assuming 6-digit codes
         mock_send_sms.assert_called_once()
@@ -222,7 +222,7 @@ class PhoneVerificationServiceTest(TestCase):
         db_alias = get_db_alias()
         # Set up verification code
         self.user.user_phone_number_verification_code = '123456'
-        self.user.user_phone_number_verification_code_timestamp = timezone.now()
+        self.user.user_phone_number_verification_code_generated_at = timezone.now()
         self.user.save(using=db_alias or None)
         result = self.phone_service.verify_phone_code(self.user, '123456', db_alias=db_alias)
         self.assertTrue(result)
@@ -379,7 +379,7 @@ class AccountsServiceIntegrationTest(TestCase):
         self.assertTrue(result)
         user.refresh_from_db(using=db_alias or None)
         self.assertFalse(user.is_active)
-    @patch('accounts.services.send_phone_message')
+    @patch('accounts.services.services.send_phone_message')
     def test_phone_verification_service_flow(self, mock_send_sms):
         """Test complete phone verification flow through services."""
         db_alias = get_db_alias()
@@ -389,6 +389,7 @@ class AccountsServiceIntegrationTest(TestCase):
         code = self.phone_service.send_verification_code(user, db_alias=db_alias)
         self.assertIsNotNone(code)
         # Verify the code through service
+        user.refresh_from_db(using=db_alias or None)
         result = self.phone_service.verify_phone_code(user, code, db_alias=db_alias)
         self.assertTrue(result)
         user.refresh_from_db(using=db_alias or None)

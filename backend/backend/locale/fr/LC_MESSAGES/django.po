@@ -8,35 +8,35 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-28 07:41+0100\n"
+"POT-Creation-Date: 2026-03-09 22:44+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"Language-Team: French <fr@li.org>\n"
+"Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: admin.py:79
+#: admin.py:76
 #, python-format
 msgid "%(count)d message(s) marked as in progress."
 msgstr "%(count)d message(s) marqués comme en cours."
 
-#: admin.py:81
+#: admin.py:79
 msgid "Mark as in progress"
 msgstr "Marquer comme en cours"
 
-#: admin.py:90
+#: admin.py:88
 #, python-format
 msgid "%(count)d message(s) marked as resolved."
 msgstr "%(count)d message(s) marqués comme résolus."
 
-#: admin.py:92
+#: admin.py:91
 msgid "Mark as resolved"
 msgstr "Marquer comme résolu"
 
-#: admin.py:101
+#: admin.py:100
 #, python-format
 msgid "%(count)d message(s) marked as closed."
 msgstr "%(count)d message(s) marqués comme fermés."
@@ -45,154 +45,158 @@ msgstr "%(count)d message(s) marqués comme fermés."
 msgid "Mark as closed"
 msgstr "Marquer comme fermé"
 
-#: models.py:12
+#: models/models.py:12
 msgid "Technical Support"
 msgstr "Support technique"
 
-#: models.py:13
+#: models/models.py:13
 msgid "Billing & Account"
 msgstr "Facturation et compte"
 
-#: models.py:14
+#: models/models.py:14
 msgid "Feature Request"
 msgstr "Demande de fonctionnalité"
 
-#: models.py:15
+#: models/models.py:15
 msgid "Partnership"
 msgstr "Partenariat"
 
-#: models.py:16
+#: models/models.py:16
 msgid "Other"
 msgstr "Autre"
 
-#: models.py:20
+#: models/models.py:19
 msgid "New"
 msgstr "Nouveau"
 
-#: models.py:21
+#: models/models.py:20
 msgid "In Progress"
 msgstr "En cours"
 
-#: models.py:22
+#: models/models.py:21
 msgid "Resolved"
 msgstr "Résolu"
 
-#: models.py:23
+#: models/models.py:22
 msgid "Closed"
 msgstr "Fermé"
 
-#: models.py:29
+#: models/models.py:27
 msgid "Full Name"
 msgstr "Nom complet"
 
-#: models.py:30
+#: models/models.py:28
 msgid "The full name of the person contacting us"
 msgstr "Le nom complet de la personne qui nous contacte"
 
-#: models.py:34
+#: models/models.py:31
 msgid "Email Address"
 msgstr "Adresse e-mail"
 
-#: models.py:35
+#: models/models.py:32
 msgid "Email address for response"
 msgstr "Adresse e-mail pour la réponse"
 
-#: models.py:41
+#: models/models.py:37
 msgid "Subject"
 msgstr "Sujet"
 
-#: models.py:42
+#: models/models.py:38
 msgid "Category of the inquiry"
 msgstr "Catégorie de la demande"
 
-#: models.py:47
+#: models/models.py:42
 msgid "Message"
 msgstr "Message"
 
-#: models.py:48
+#: models/models.py:43
 msgid "The detailed message from the user"
 msgstr "Le message détaillé de l'utilisateur"
 
-#: models.py:56
+#: models/models.py:50
 msgid "Status"
 msgstr "Statut"
 
-#: models.py:57
+#: models/models.py:51
 msgid "Current status of the message"
 msgstr "Statut actuel du message"
 
-#: models.py:63
+#: models/models.py:56
 msgid "Created At"
 msgstr "Créé le"
 
-#: models.py:64
+#: models/models.py:57
 msgid "When the message was submitted"
 msgstr "Quand le message a été soumis"
 
-#: models.py:69
+#: models/models.py:61
 msgid "Updated At"
 msgstr "Mis à jour le"
 
-#: models.py:70
+#: models/models.py:62
 msgid "When the message was last updated"
 msgstr "Quand le message a été mis à jour pour la dernière fois"
 
-#: models.py:79
+#: models/models.py:70
 msgid "User"
 msgstr "Utilisateur"
 
-#: models.py:80
+#: models/models.py:71
 msgid "Associated user account if logged in"
 msgstr "Compte utilisateur associé si connecté"
 
-#: models.py:86
+#: models/models.py:76
 msgid "Admin Notes"
 msgstr "Notes administrateur"
 
-#: models.py:87
+#: models/models.py:77
 msgid "Internal notes for administrators"
 msgstr "Notes internes pour les administrateurs"
 
-#: models.py:93
+#: models/models.py:83
 msgid "Contact Message"
 msgstr "Message de contact"
 
-#: models.py:94
+#: models/models.py:84
 msgid "Contact Messages"
 msgstr "Messages de contact"
 
-#: serializers.py:29
+#: serializers.py:32
 msgid "Message must be at least 10 characters long"
 msgstr "Le message doit contenir au moins 10 caractères"
 
-#: serializers.py:39
+#: serializers.py:42
 msgid "Name is required"
 msgstr "Le nom est requis"
 
-#: services.py:43 tests/test_functionalities.py:395
+#: services/services.py:47 tests/test_views.py:185
 msgid "Geolocation service unavailable. Try again later."
 msgstr "Service de géolocalisation indisponible. Veuillez réessayer plus tard."
 
-#: services.py:83
+#: services/services.py:78
 msgid "Geolocation service unavailable"
 msgstr "Service de géolocalisation indisponible"
 
-#: services.py:105
+#: services/services.py:96
 #, python-brace-format
 msgid "Your verification code is: {code}"
 msgstr "Votre code de vérification est : {code}"
 
-#: services.py:114
+#: services/services.py:103
 msgid "Failed to send verification code"
 msgstr "Échec de l'envoi du code de vérification"
 
-#: services.py:120
+#: services/services.py:107
 msgid "Message sending service unavailable"
 msgstr "Service d'envoi de messages indisponible"
 
-#: services.py:145
+#: services/services.py:128
 msgid "Bulk message sending failed"
 msgstr "Échec de l'envoi de messages groupés"
+
+#: services/services.py:219
+msgid "Invalid email address"
+msgstr "Adresse e-mail invalide"
 
 #: settings/base.py:132
 msgid "Arabic"
@@ -211,96 +215,135 @@ msgstr "Français"
 msgid "%(current_year)s © %(app_name)s. All rights reserved."
 msgstr "%(current_year)s © %(app_name)s. Tous droits réservés."
 
-#: tests/test_functionalities.py:186 tests/test_functionalities.py:196
-#: utils.py:69 utils.py:128
+#: utils.py:80 utils.py:158
 msgid "Select"
 msgstr "Sélectionner"
 
-#: tests/test_models.py:1569 tests/test_models.py:1588 views.py:134
+#: utils.py:158
+msgid "Apple"
+msgstr "Apple"
+
+#: utils.py:158
+msgid "Default"
+msgstr "Défaut"
+
+#: utils.py:159
+msgid "Facebook"
+msgstr "Facebook"
+
+#: utils.py:159
+msgid "Google"
+msgstr "Google"
+
+#: utils.py:160
+msgid "Sms"
+msgstr "Sms"
+
+#: utils.py:160
+msgid "Yahoo"
+msgstr "Yahoo"
+
+#: utils.py:160
+msgid "Whatsapp"
+msgstr "Whatsapp"
+
+#: utils.py:160
+msgid "X"
+msgstr "X"
+
+#: views/views.py:65
+msgid "An unexpected error occurred"
+msgstr "Une erreur inattendue s'est produite"
+
+#: views/views.py:130
 msgid ""
 "Your message has been sent successfully. We will get back to you within 24 "
 "hours."
 msgstr ""
 "Votre message a été envoyé avec succès. Nous vous répondrons sous 24 heures."
 
-#: tests/test_models.py:1606 views.py:140
+#: views/views.py:137
+msgid "Failed to create message"
+msgstr "Échec de la création du message"
+
+#: views/views.py:142
 msgid "Please correct the errors below."
 msgstr "Veuillez corriger les erreurs ci-dessous."
 
-#: tests/test_models.py:1906 views.py:148
+#: views/views.py:149
 msgid "An error occurred while sending your message. Please try again later."
 msgstr ""
 "Une erreur s'est produite lors de l'envoi de votre message. Veuillez "
 "réessayer plus tard."
 
-#: tests/test_models.py:1911
-msgid "Error creating contact message"
-msgstr "Erreur lors de la création du message de contact"
+#: views/views.py:208
+msgid "An error occurred while fetching messages."
+msgstr "Une erreur s'est produite lors de la récupération des messages."
 
-#: utils.py:128
-msgid "Apple"
-msgstr "Apple"
+#: views/views.py:231 views/views.py:300
+msgid "Message not found"
+msgstr "Message introuvable"
 
-#: utils.py:128
-msgid "Default"
-msgstr "Défaut"
+#: views/views.py:239
+msgid "You do not have permission to view this message"
+msgstr "Vous n'avez pas la permission de voir ce message"
 
-#: utils.py:128
-msgid "Facebook"
-msgstr "Facebook"
+#: views/views.py:253
+msgid "An error occurred while fetching the message."
+msgstr "Une erreur s'est produite lors de la récupération du message."
 
-#: utils.py:128
-msgid "Google"
-msgstr "Google"
+#: views/views.py:281
+msgid "Status is required"
+msgstr "Le statut est requis"
 
-#: utils.py:129
-msgid "Sms"
-msgstr "Sms"
+#: views/views.py:289
+msgid "Invalid status. Must be one of: new, in_progress, resolved, closed"
+msgstr "Statut invalide. Doit être l'un des suivants : new, in_progress, resolved, closed"
 
-#: utils.py:129
-msgid "Yahoo"
-msgstr "Yahoo"
+#: views/views.py:309
+msgid "Status updated successfully"
+msgstr "Statut mis à jour avec succès"
 
-#: utils.py:129
-msgid "Whatsapp"
-msgstr "Whatsapp"
+#: views/views.py:317
+msgid "An error occurred while updating the message."
+msgstr "Une erreur s'est produite lors de la mise à jour du message."
 
-#: utils.py:129
-msgid "X"
-msgstr "X"
+#: views/views.py:344
+msgid "An error occurred while fetching statistics."
+msgstr "Une erreur s'est produite lors de la récupération des statistiques."
 
-#: views.py:64
-msgid "An unexpected error occurred"
-msgstr "Une erreur inattendue s'est produite"
-
-#: ws_consumers.py:143
+#: ws_consumers.py:138
 msgid "Connected to profile updates"
 msgstr "Connecté aux mises à jour du profil"
 
-#: ws_consumers.py:179
+#: ws_consumers.py:171
 msgid "Unknown message type"
 msgstr "Type de message inconnu"
 
-#: ws_consumers.py:182
+#: ws_consumers.py:173
 msgid "Invalid JSON format"
 msgstr "Format JSON invalide"
 
-#: ws_consumers.py:185
+#: ws_consumers.py:176
 msgid "Internal server error"
 msgstr "Erreur interne du serveur"
 
-#: ws_consumers.py:212
+#: ws_consumers.py:202
 msgid "Error processing profile update"
 msgstr "Erreur lors du traitement de la mise à jour du profil"
 
-#: ws_consumers.py:236
+#: ws_consumers.py:224
 msgid "Error processing profile password update"
 msgstr "Erreur lors du traitement de la mise à jour du mot de passe du profil"
 
-#: ws_consumers.py:257
+#: ws_consumers.py:245
 msgid "Error processing profile password reset"
-msgstr "Erreur lors du traitement de la réinitialisation du mot de passe du profil"
+msgstr ""
+"Erreur lors du traitement de la réinitialisation du mot de passe du profil"
 
-#: ws_consumers.py:273
+#: ws_consumers.py:261
 msgid "Error processing notification"
 msgstr "Erreur lors du traitement de la notification"
+
+#~ msgid "Error creating contact message"
+#~ msgstr "Erreur lors de la création du message de contact"

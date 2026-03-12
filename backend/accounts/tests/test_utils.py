@@ -6,9 +6,10 @@ from datetime import date
 from django.conf import settings
 from django.test import TestCase
 
+from accounts.constants import GENDERS_CHOICES
 from accounts.models import User
 from accounts.repositories.user_repository import UserRepository
-from accounts.utils import (GENDERS_CHOICES, format_phone_number,
+from accounts.utils import (format_phone_number,
                              send_phone_number_verification_code)
 from backend.utils import get_db_alias
 

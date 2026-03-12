@@ -26,6 +26,7 @@ import firebase_config  # pylint: disable=unused-import
 from backend.utils import (generate_random_code, generate_random_string,
                            get_email_base_context, send_phone_message)
 
+from accounts.constants import GENDERS_CHOICES
 from accounts.exceptions import (AuthenticationException, EmailSendingException,
                          FirebaseException,
                          PhoneVerificationException,
@@ -35,7 +36,7 @@ from accounts.exceptions import (AuthenticationException, EmailSendingException,
                          UserUpdateException, UserValidationException,
                          VerificationCodeException)
 from accounts.models import User
-from accounts.utils import GENDERS_CHOICES, format_phone_number, send_verification_email
+from accounts.utils import format_phone_number
 from accounts.repositories import UserRepository
 
 logger = logging.getLogger(__name__)
@@ -303,32 +304,6 @@ class UserService:
         return UserRepository.get_statistics(db_alias=db_alias)
 
     
-    # noinspection PyMethodMayBeStatic
-    def to_login_dict(self):
-        """
-        Returns:
-            dict: The data that represent logged user.
-        """
-        return {
-            "current_language": self.current_language,
-            "email": self.email,
-            "first_name": self.first_name,
-            "id": self.id,
-            "is_user_phone_number_validated": self.is_user_phone_number_validated,
-            "last_name": self.last_name,
-            "user_address": self.user_address,
-            "user_birthday": self.user_birthday,
-            "user_cin": self.user_cin,
-            "user_country": self.user_country,
-            "user_gender": self.user_gender,
-            "user_image_url": self.user_image_url,
-            "user_initials_bg_color": self.user_initials_bg_color or "",
-            "user_phone_number": self.user_phone_number,
-            "user_phone_number_to_verify": self.user_phone_number_to_verify,
-            "user_timezone": self.user_timezone,
-            "user_theme": self.user_theme,
-            "username": self.username,
-        }
     @staticmethod
     def send_emails_verifications_links(email=None, db_alias=''):
         """
@@ -366,14 +341,13 @@ class UserService:
 class EmailVerificationService:
     """Service for email verification operations."""
     @staticmethod
-    def send_verification_email(user, handle_send_email_error=False, do_not_mock_api=False, language=None):
+    def send_verification_email(user, handle_send_email_error=False, language=None):
         """
         Send email verification link to user.
         
         Args:
             user (User): User instance
             handle_send_email_error (bool): Flag to simulate an intentional error for testing.
-            do_not_mock_api (bool): Flag to run api even if it is for testing.
             language (str): Language for email template
             
         Returns:
@@ -389,6 +363,8 @@ class EmailVerificationService:
             activate(language)
             # Generate verification token
             token = default_token_generator.make_token(user)
+            timestamp = datetime.datetime.now().timestamp()
+            token += "_*_" + str(timestamp)
             uid = urlsafe_base64_encode(force_bytes(user.pk))
             # Build verification URL
             verification_url = f"{settings.FRONTEND_ENDPOINT}/accounts/verify-email/{uid}/{token}/"
@@ -412,8 +388,6 @@ class EmailVerificationService:
                 # This is for testing send email's error from third party
                 if handle_send_email_error:
                     _err = int("text")
-                if settings.TEST and do_not_mock_api is False:
-                    return 200, (uid, token)
                 email = EmailMultiAlternatives(subject, text_content, context.get('from_email'),
                                             [user.email])
                 email.attach_alternative(html_content, "text/html")
@@ -460,7 +434,7 @@ class EmailVerificationService:
                 raise TokenValidationException("Invalid or expired token")
             
             # Mark email as verified through repository
-            UserRepository.verify_email(user.id, db_alias=db_alias)
+            user = UserRepository.verify_email(user.id, db_alias=db_alias)
             
             logger.info("Email verified for user: %s", user.username)
             return user
@@ -507,7 +481,7 @@ class PhoneVerificationService:
             # Send SMS
             formatted_phone = format_phone_number(user.user_phone_number)
             message = f"Your verification code is: {verification_code}"
-            success = send_phone_message(formatted_phone, message)
+            success = send_phone_message(message, [formatted_phone])
             if not success:
                 raise SMSException("Failed to send SMS")
             logger.info("Verification code sent to: %s", formatted_phone)

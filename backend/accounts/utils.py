@@ -17,14 +17,12 @@ from django.utils.translation import gettext_lazy as _
 from rest_framework_simplejwt.token_blacklist.models import (BlacklistedToken,
                                                              OutstandingToken)
 
-from accounts.repositories import UserRepository
 from backend.utils import (generate_random_code, get_db_alias, get_email_base_context,
                            send_phone_message)
 
 # Get a logger instance
 logger = logging.getLogger(__name__)
 
-GENDERS_CHOICES = [("", _("Select")), ("female", _("Female")), ("male", _("Male"))]
 
 
 def format_phone_number(user_phone_number):
@@ -170,6 +168,7 @@ def validate_password_reset_token(uid, token, db_alias=''): # pylint: disable=to
     Returns:
         tuple: (is_valid, user, error_message)
     """
+    from accounts.repositories import UserRepository
     User = get_user_model()
     try:
         # Decode user id

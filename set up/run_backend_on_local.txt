@@ -1,0 +1,56 @@
+Prerequisites
+
+- Docker and Docker Compose (preferred for this repo)
+- (Optional) Python 3.10+ and Git if running locally without Docker
+
+Preferred: Run using Docker Compose
+
+1) Open a terminal and navigate to the backend folder
+
+```powershell
+cd "qualitick_backend\backend"
+```
+
+2) Build and start containers
+
+```powershell
+docker-compose build
+docker-compose up -d
+# To view logs:
+docker-compose logs -f
+# To stop:
+docker-compose down
+```
+
+3) Environment / secrets
+
+- If the `docker-compose.yml` expects env files, create a `.env` or pass environment variables. Example:
+
+	- Create `backend/.env.local` with values used by your compose file (SECRET_KEY, FIREBASE_SERVICE_ACCOUNT, etc.)
+
+- If a service requires `firebase-service-account.json`, mount it or point the container to it via env var.
+
+Alternative: Run without Docker (local Python virtualenv)
+
+1) Create and activate virtualenv
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+```
+
+2) Install dependencies and migrate
+
+```powershell
+pip install -r requirements.txt
+python manage.py migrate
+python manage.py createsuperuser
+python manage.py runserver 0.0.0.0:8000
+```
+
+Notes
+
+- Docker Compose will usually start additional services like Redis or Celery if configured.
+- If containers fail, run `docker-compose down --volumes` and retry after clearing stale volumes.
+- Ask me to add a sample `.env` template tailored to this repo if you want.
+

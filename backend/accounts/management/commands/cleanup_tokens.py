@@ -73,28 +73,29 @@ class Command(BaseCommand):
             if confirm.lower() not in ['y', 'yes']:
                 self.stdout.write("Operation cancelled")
                 return
-        # Remove expired tokens
+        # Remove expired tokens, handling errors per-QuerySet so we can report
+        # failures even if one of the deletes raises an exception.
         try:
-            blacklisted_deleted = expired_blacklisted.delete(using=db_alias or None)[0]
-            outstanding_deleted = expired_outstanding.delete(using=db_alias or None)[0]
-            self.stdout.write(
-                self.style.SUCCESS(
-                    f"✓ Removed {blacklisted_deleted} expired blacklisted tokens"
-                )
-            )
-            self.stdout.write(
-                self.style.SUCCESS(
-                    f"✓ Removed {outstanding_deleted} expired outstanding tokens"
-                )
-            )
-            self.stdout.write(
-                self.style.SUCCESS(
-                    f"Total tokens cleaned up: {blacklisted_deleted + outstanding_deleted}"
-                )
-            )
+            # Delete blacklisted tokens first
+            try:
+                blacklisted_deleted = expired_blacklisted.delete()[0]
+            except Exception as e:  # pylint: disable=broad-exception-caught
+                logger.error(f"Error deleting blacklisted tokens: {e}")
+                self.stdout.write(self.style.ERROR(f"Error during cleanup: {e}"))
+                return
+
+            try:
+                outstanding_deleted = expired_outstanding.delete()[0]
+            except Exception as e:  # pylint: disable=broad-exception-caught
+                logger.error(f"Error deleting outstanding tokens: {e}")
+                self.stdout.write(self.style.ERROR(f"Error during cleanup: {e}"))
+                return
+
+            # If we reached here, both deletes succeeded
+            self.stdout.write(self.style.SUCCESS(f"✓ Removed {blacklisted_deleted} expired blacklisted tokens"))
+            self.stdout.write(self.style.SUCCESS(f"✓ Removed {outstanding_deleted} expired outstanding tokens"))
+            self.stdout.write(self.style.SUCCESS(f"Total tokens cleaned up: {blacklisted_deleted + outstanding_deleted}"))
             logger.info(f"Token cleanup completed: {blacklisted_deleted + outstanding_deleted} tokens removed") # pylint: disable=line-too-long
-        except Exception as e:  # pylint: disable=broad-exception-caught
+        except Exception as e:  # fallback
             logger.error(f"Error during token cleanup: {e}")
-            self.stdout.write(
-                self.style.ERROR(f"Error during cleanup: {e}")
-            )
+            self.stdout.write(self.style.ERROR(f"Error during cleanup: {e}"))

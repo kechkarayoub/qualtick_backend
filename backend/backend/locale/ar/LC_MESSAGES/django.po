@@ -8,36 +8,36 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-08-28 07:41+0100\n"
+"POT-Creation-Date: 2026-03-09 22:44+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"Language-Team: Arabic <ar@li.org>\n"
+"Language: ar\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 "
 "&& n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5;\n"
 
-#: admin.py:79
+#: admin.py:76
 #, python-format
 msgid "%(count)d message(s) marked as in progress."
 msgstr "%(count)d رسالة تم وضعها قيد المعالجة."
 
-#: admin.py:81
+#: admin.py:79
 msgid "Mark as in progress"
 msgstr "وضع كقيد المعالجة"
 
-#: admin.py:90
+#: admin.py:88
 #, python-format
 msgid "%(count)d message(s) marked as resolved."
 msgstr "%(count)d رسالة تم وضعها كمحلولة."
 
-#: admin.py:92
+#: admin.py:91
 msgid "Mark as resolved"
 msgstr "وضع كمحلولة"
 
-#: admin.py:101
+#: admin.py:100
 #, python-format
 msgid "%(count)d message(s) marked as closed."
 msgstr "%(count)d رسالة تم وضعها كمغلقة."
@@ -46,154 +46,158 @@ msgstr "%(count)d رسالة تم وضعها كمغلقة."
 msgid "Mark as closed"
 msgstr "وضع كمغلقة"
 
-#: models.py:12
+#: models/models.py:12
 msgid "Technical Support"
 msgstr "الدعم الفني"
 
-#: models.py:13
+#: models/models.py:13
 msgid "Billing & Account"
 msgstr "الفوترة والحساب"
 
-#: models.py:14
+#: models/models.py:14
 msgid "Feature Request"
 msgstr "طلب ميزة"
 
-#: models.py:15
+#: models/models.py:15
 msgid "Partnership"
 msgstr "شراكة"
 
-#: models.py:16
+#: models/models.py:16
 msgid "Other"
 msgstr "أخرى"
 
-#: models.py:20
+#: models/models.py:19
 msgid "New"
 msgstr "جديد"
 
-#: models.py:21
+#: models/models.py:20
 msgid "In Progress"
 msgstr "قيد المعالجة"
 
-#: models.py:22
+#: models/models.py:21
 msgid "Resolved"
 msgstr "محلول"
 
-#: models.py:23
+#: models/models.py:22
 msgid "Closed"
 msgstr "مغلق"
 
-#: models.py:29
+#: models/models.py:27
 msgid "Full Name"
 msgstr "الاسم الكامل"
 
-#: models.py:30
+#: models/models.py:28
 msgid "The full name of the person contacting us"
 msgstr "الاسم الكامل للشخص الذي يتواصل معنا"
 
-#: models.py:34
+#: models/models.py:31
 msgid "Email Address"
 msgstr "عنوان البريد الإلكتروني"
 
-#: models.py:35
+#: models/models.py:32
 msgid "Email address for response"
 msgstr "عنوان البريد الإلكتروني للرد"
 
-#: models.py:41
+#: models/models.py:37
 msgid "Subject"
 msgstr "الموضوع"
 
-#: models.py:42
+#: models/models.py:38
 msgid "Category of the inquiry"
 msgstr "فئة الاستفسار"
 
-#: models.py:47
+#: models/models.py:42
 msgid "Message"
 msgstr "الرسالة"
 
-#: models.py:48
+#: models/models.py:43
 msgid "The detailed message from the user"
 msgstr "الرسالة التفصيلية من المستخدم"
 
-#: models.py:56
+#: models/models.py:50
 msgid "Status"
 msgstr "الحالة"
 
-#: models.py:57
+#: models/models.py:51
 msgid "Current status of the message"
 msgstr "الحالة الحالية للرسالة"
 
-#: models.py:63
+#: models/models.py:56
 msgid "Created At"
 msgstr "تاريخ الإنشاء"
 
-#: models.py:64
+#: models/models.py:57
 msgid "When the message was submitted"
 msgstr "وقت إرسال الرسالة"
 
-#: models.py:69
+#: models/models.py:61
 msgid "Updated At"
 msgstr "تاريخ التحديث"
 
-#: models.py:70
+#: models/models.py:62
 msgid "When the message was last updated"
 msgstr "وقت آخر تحديث للرسالة"
 
-#: models.py:79
+#: models/models.py:70
 msgid "User"
 msgstr "المستخدم"
 
-#: models.py:80
+#: models/models.py:71
 msgid "Associated user account if logged in"
 msgstr "حساب المستخدم المرتبط إذا كان مسجلاً الدخول"
 
-#: models.py:86
+#: models/models.py:76
 msgid "Admin Notes"
 msgstr "ملاحظات المشرف"
 
-#: models.py:87
+#: models/models.py:77
 msgid "Internal notes for administrators"
 msgstr "ملاحظات داخلية للمسؤولين"
 
-#: models.py:93
+#: models/models.py:83
 msgid "Contact Message"
 msgstr "رسالة تواصل"
 
-#: models.py:94
+#: models/models.py:84
 msgid "Contact Messages"
 msgstr "رسائل التواصل"
 
-#: serializers.py:29
+#: serializers.py:32
 msgid "Message must be at least 10 characters long"
 msgstr "يجب أن تكون الرسالة 10 أحرف على الأقل"
 
-#: serializers.py:39
+#: serializers.py:42
 msgid "Name is required"
 msgstr "الاسم مطلوب"
 
-#: services.py:43 tests/test_functionalities.py:395
+#: services/services.py:47 tests/test_views.py:185
 msgid "Geolocation service unavailable. Try again later."
 msgstr "خدمة تحديد الموقع غير متوفرة. حاول مرة أخرى لاحقًا."
 
-#: services.py:83
+#: services/services.py:78
 msgid "Geolocation service unavailable"
 msgstr "خدمة تحديد الموقع غير متوفرة"
 
-#: services.py:105
+#: services/services.py:96
 #, python-brace-format
 msgid "Your verification code is: {code}"
 msgstr "رمز التحقق الخاص بك هو: {code}"
 
-#: services.py:114
+#: services/services.py:103
 msgid "Failed to send verification code"
 msgstr "فشل في إرسال رمز التحقق"
 
-#: services.py:120
+#: services/services.py:107
 msgid "Message sending service unavailable"
 msgstr "خدمة إرسال الرسائل غير متوفرة"
 
-#: services.py:145
+#: services/services.py:128
 msgid "Bulk message sending failed"
 msgstr "فشل إرسال الرسائل الجماعية"
+
+#: services/services.py:219
+msgid "Invalid email address"
+msgstr "عنوان البريد الإلكتروني غير صالح"
 
 #: settings/base.py:132
 msgid "Arabic"
@@ -212,93 +216,131 @@ msgstr "الفرنسية"
 msgid "%(current_year)s © %(app_name)s. All rights reserved."
 msgstr "%(current_year)s © %(app_name)s. جميع الحقوق محفوظة."
 
-#: tests/test_functionalities.py:186 tests/test_functionalities.py:196
-#: utils.py:69 utils.py:128
+#: utils.py:80 utils.py:158
 msgid "Select"
 msgstr "اختر"
 
-#: tests/test_models.py:1569 tests/test_models.py:1588 views.py:134
+#: utils.py:158
+msgid "Apple"
+msgstr "Apple"
+
+#: utils.py:158
+msgid "Default"
+msgstr "افتراضي"
+
+#: utils.py:159
+msgid "Facebook"
+msgstr "Facebook"
+
+#: utils.py:159
+msgid "Google"
+msgstr "Google"
+
+#: utils.py:160
+msgid "Sms"
+msgstr "رسالة نصية"
+
+#: utils.py:160
+msgid "Yahoo"
+msgstr "Yahoo"
+
+#: utils.py:160
+msgid "Whatsapp"
+msgstr "Whatsapp"
+
+#: utils.py:160
+msgid "X"
+msgstr "X"
+
+#: views/views.py:65
+msgid "An unexpected error occurred"
+msgstr "حدث خطأ غير متوقع"
+
+#: views/views.py:130
 msgid ""
 "Your message has been sent successfully. We will get back to you within 24 "
 "hours."
 msgstr "تم إرسال رسالتك بنجاح. سنرد عليك خلال 24 ساعة."
 
-#: tests/test_models.py:1606 views.py:140
+#: views/views.py:137
+msgid "Failed to create message"
+msgstr "فشل في إنشاء الرسالة"
+
+#: views/views.py:142
 msgid "Please correct the errors below."
 msgstr "يرجى تصحيح الأخطاء أدناه."
 
-#: tests/test_models.py:1906 views.py:148
+#: views/views.py:149
 msgid "An error occurred while sending your message. Please try again later."
 msgstr "حدث خطأ أثناء إرسال رسالتك. يرجى المحاولة مرة أخرى لاحقًا."
 
-#: tests/test_models.py:1911
-msgid "Error creating contact message"
-msgstr "خطأ أثناء إنشاء رسالة الاتصال"
+#: views/views.py:208
+msgid "An error occurred while fetching messages."
+msgstr "حدث خطأ أثناء جلب الرسائل."
 
-#: utils.py:128
-msgid "Apple"
-msgstr "Apple"
+#: views/views.py:231 views/views.py:300
+msgid "Message not found"
+msgstr "الرسالة غير موجودة"
 
-#: utils.py:128
-msgid "Default"
-msgstr "افتراضي"
+#: views/views.py:239
+msgid "You do not have permission to view this message"
+msgstr "ليس لديك إذن لعرض هذه الرسالة"
 
-#: utils.py:128
-msgid "Facebook"
-msgstr "Facebook"
+#: views/views.py:253
+msgid "An error occurred while fetching the message."
+msgstr "حدث خطأ أثناء جلب الرسالة."
 
-#: utils.py:128
-msgid "Google"
-msgstr "Google"
+#: views/views.py:281
+msgid "Status is required"
+msgstr "الحالة مطلوبة"
 
-#: utils.py:129
-msgid "Sms"
-msgstr "رسالة نصية"
+#: views/views.py:289
+msgid "Invalid status. Must be one of: new, in_progress, resolved, closed"
+msgstr "حالة غير صالحة. يجب أن تكون إحدى: new, in_progress, resolved, closed"
 
-#: utils.py:129
-msgid "Yahoo"
-msgstr "Yahoo"
+#: views/views.py:309
+msgid "Status updated successfully"
+msgstr "تم تحديث الحالة بنجاح"
 
-#: utils.py:129
-msgid "Whatsapp"
-msgstr "Whatsapp"
+#: views/views.py:317
+msgid "An error occurred while updating the message."
+msgstr "حدث خطأ أثناء تحديث الرسالة."
 
-#: utils.py:129
-msgid "X"
-msgstr "X"
+#: views/views.py:344
+msgid "An error occurred while fetching statistics."
+msgstr "حدث خطأ أثناء جلب الإحصائيات."
 
-#: views.py:64
-msgid "An unexpected error occurred"
-msgstr "حدث خطأ غير متوقع"
-
-#: ws_consumers.py:143
+#: ws_consumers.py:138
 msgid "Connected to profile updates"
 msgstr "متصل بتحديثات الملف الشخصي"
 
-#: ws_consumers.py:179
+#: ws_consumers.py:171
 msgid "Unknown message type"
 msgstr "نوع الرسالة غير معروف"
 
-#: ws_consumers.py:182
+#: ws_consumers.py:173
 msgid "Invalid JSON format"
 msgstr "تنسيق JSON غير صالح"
 
-#: ws_consumers.py:185
+#: ws_consumers.py:176
 msgid "Internal server error"
 msgstr "خطأ في الخادم الداخلي"
 
-#: ws_consumers.py:212
+#: ws_consumers.py:202
 msgid "Error processing profile update"
 msgstr "خطأ أثناء معالجة تحديث الملف الشخصي"
 
-#: ws_consumers.py:236
+#: ws_consumers.py:224
 msgid "Error processing profile password update"
 msgstr "خطأ أثناء معالجة تحديث كلمة مرور الملف الشخصي"
 
-#: ws_consumers.py:257
+#: ws_consumers.py:245
 msgid "Error processing profile password reset"
 msgstr "خطأ أثناء معالجة إعادة تعيين كلمة مرور الملف الشخصي"
 
-#: ws_consumers.py:273
+#: ws_consumers.py:261
 msgid "Error processing notification"
 msgstr "خطأ أثناء معالجة الإشعار"
+
+#~ msgid "Error creating contact message"
+#~ msgstr "خطأ أثناء إنشاء رسالة الاتصال"

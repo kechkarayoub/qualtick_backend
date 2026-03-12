@@ -26,10 +26,7 @@ class BaseRepository:
         Returns:
             The model instance or None if not found
         """
-        try:
-            return cls.model.objects.using(db_alias or None).get(id=obj_id)
-        except ObjectDoesNotExist:
-            return None
+        return cls.model.objects.using(db_alias or None).get(id=obj_id)
     
     @classmethod
     def get_by_filter(cls, db_alias: str = '', **filters) -> Optional[models.Model]:
@@ -125,7 +122,7 @@ class BaseRepository:
         """
         obj = cls.get_by_id(obj_id, db_alias=db_alias)
         if obj:
-            obj.delete(using=db_alias or None)
+            obj.delete()
             return True
         return False
     

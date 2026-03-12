@@ -195,3 +195,7 @@ my.cnf
 **/supervisord.conf
 **/supervisord.pid
 
+# Debug / standalone test scripts
+backend/debug_channel_layer.py
+backend/test_parent_jti.py
+

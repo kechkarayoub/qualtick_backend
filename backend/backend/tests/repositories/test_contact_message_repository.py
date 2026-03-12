@@ -1,6 +1,8 @@
 """
 Tests for ContactMessageRepository.
 """
+from uuid import uuid4
+
 from django.test import TestCase
 from django.contrib.auth import get_user_model
 
@@ -18,9 +20,10 @@ class ContactMessageRepositoryTest(TestCase):
     def setUp(self):
         """Set up test data."""
         db_alias = get_db_alias()
+        suffix = uuid4().hex[:8]
         self.user = UserRepository.create_user(
-            username='testuser',
-            email='test@example.com',
+            username=f'testuser_{suffix}',
+            email=f'test_{suffix}@example.com',
             password='testpass123',
             db_alias=db_alias
         )

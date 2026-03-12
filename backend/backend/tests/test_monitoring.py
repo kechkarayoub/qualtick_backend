@@ -165,7 +165,7 @@ class CacheTestCase(TestCase):
     def tearDown(self):
         cache.clear()
 
-    @patch('backend.services.get_geolocation_info')
+    @patch('backend.services.services.get_geolocation_info')
     def test_geolocation_caching(self, mock_geo_info):
         """Test geolocation data caching."""
         mock_geo_info.return_value = {
@@ -246,7 +246,7 @@ class CacheTestCase(TestCase):
     def test_cache_service_invalidate_pattern_with_error(self):
         """Test cache service pattern invalidation with error handling."""
         # This tests the error handling in invalidate_pattern
-        with patch('backend.services.cache.delete_many') as mock_delete:
+        with patch('backend.services.services.cache.delete_many') as mock_delete:
             mock_delete.side_effect = Exception("Cache error")
             # Should not raise an exception
             CacheService.invalidate_pattern('test_*')
@@ -255,7 +255,7 @@ class CacheTestCase(TestCase):
 
     def test_geolocation_service_without_cache(self):
         """Test geolocation service without caching."""
-        with patch('backend.services.get_geolocation_info') as mock_geo:
+        with patch('backend.services.services.get_geolocation_info') as mock_geo:
             mock_geo.return_value = {
                 'country': 'France',
                 'countryCode': 'FR'

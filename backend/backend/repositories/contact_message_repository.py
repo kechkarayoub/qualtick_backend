@@ -27,7 +27,7 @@ class ContactMessageRepository(BaseRepository):
         Returns:
             QuerySet of ContactMessage objects
         """
-        return cls.filter(email=email, using=db_alias)
+        return cls.filter(email=email, db_alias=db_alias)
     
     @classmethod
     def get_by_user(cls, user_id: int, db_alias: str = '') -> QuerySet:
@@ -41,7 +41,7 @@ class ContactMessageRepository(BaseRepository):
         Returns:
             QuerySet of ContactMessage objects
         """
-        return cls.filter(user_id=user_id, using=db_alias)
+        return cls.filter(user_id=user_id, db_alias=db_alias)
     
     @classmethod
     def get_by_status(cls, status: str, db_alias: str = '') -> QuerySet:
@@ -55,7 +55,7 @@ class ContactMessageRepository(BaseRepository):
         Returns:
             QuerySet of ContactMessage objects
         """
-        return cls.filter(status=status, using=db_alias)
+        return cls.filter(status=status, db_alias=db_alias)
     
     @classmethod
     def get_by_subject(cls, subject: str, db_alias: str = '') -> QuerySet:
@@ -69,7 +69,7 @@ class ContactMessageRepository(BaseRepository):
         Returns:
             QuerySet of ContactMessage objects
         """
-        return cls.filter(subject=subject, using=db_alias)
+        return cls.filter(subject=subject, db_alias=db_alias)
     
     @classmethod
     def get_recent(cls, days: int = 7, db_alias: str = '') -> QuerySet:
@@ -84,7 +84,7 @@ class ContactMessageRepository(BaseRepository):
             QuerySet of ContactMessage objects
         """
         date_threshold = timezone.now() - timedelta(days=days)
-        return cls.filter(created_at__gte=date_threshold, using=db_alias)
+        return cls.filter(created_at__gte=date_threshold, db_alias=db_alias)
     
     @classmethod
     def get_pending(cls, db_alias: str = '') -> QuerySet:
@@ -97,7 +97,7 @@ class ContactMessageRepository(BaseRepository):
         Returns:
             QuerySet of ContactMessage objects
         """
-        return cls.filter(status__in=['new', 'in_progress'], using=db_alias)
+        return cls.filter(status__in=['new', 'in_progress'], db_alias=db_alias)
     
     @classmethod
     def search(cls, query: str, db_alias: str = '') -> QuerySet:
