@@ -3,7 +3,7 @@
 from django.urls import path
 
 from .jwt_views import TokenObtainPairView, TokenRefreshView
-from .views import (ForgotPasswordView, LogoutView, ResetPasswordView,
+from .views import (FCMTokenView, ForgotPasswordView, LogoutView, ResetPasswordView,
                     SendVerificationEmailLinkView, SignInThirdPartyView,
                     SignInView, SignUpThirdPartyView, SignUpView,
                     UpdateProfileView, UpdateSettingsView, verify_email,
@@ -25,4 +25,5 @@ urlpatterns = [
     path('update-settings/', UpdateSettingsView.as_view(), name='update-settings'),
     path('forgot-password/', ForgotPasswordView.as_view(), name='forgot-password'),
     path('reset-password/', ResetPasswordView.as_view(), name='reset-password'),
+    path('fcm-token/', FCMTokenView.as_view(), name='fcm-token'),
 ]

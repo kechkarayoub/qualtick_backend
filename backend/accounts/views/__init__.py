@@ -1,5 +1,6 @@
 """Initialization of views for the accounts app."""
 from .email_views import *
+from .fcm_token_views import FCMTokenView
 from .logout_views import *
 from .password_views import *
 from .phone_number_views import *

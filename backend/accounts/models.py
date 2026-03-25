@@ -145,3 +145,56 @@ class User(AbstractUser):
             "user_theme": self.user_theme,
             "username": self.username,
         }
+
+
+PLATFORM_CHOICES = [
+    ("android", _("Android")),
+    ("ios", _("iOS")),
+    ("web", _("Web")),
+]
+
+
+class FCMToken(models.Model):
+    """
+    Stores Firebase Cloud Messaging registration tokens for each user device.
+
+    A single user can have multiple tokens (one per device/browser).
+    Tokens are soft-deleted (is_active=False) on logout or when FCM reports
+    them as unregistered, so historical records are preserved.
+    """
+
+    class Meta:
+        db_table = "accounts_fcm_token"
+        verbose_name = _("FCM Token")
+        verbose_name_plural = _("FCM Tokens")
+        indexes = [
+            models.Index(fields=["user", "is_active"]),
+            models.Index(fields=["token"]),
+        ]
+
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="fcm_tokens",
+        verbose_name=_("User"),
+    )
+    token = models.TextField(unique=True, verbose_name=_("FCM token"))
+    platform = models.CharField(
+        max_length=10,
+        choices=PLATFORM_CHOICES,
+        db_index=True,
+        verbose_name=_("Platform"),
+    )
+    device_id = models.CharField(
+        max_length=255,
+        blank=True,
+        default="",
+        db_index=True,
+        verbose_name=_("Device ID"),
+    )
+    is_active = models.BooleanField(default=True, db_index=True, verbose_name=_("Is active"))
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name=_("Created at"))
+    updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Updated at"))
+
+    def __str__(self) -> str:
+        return f"FCMToken({self.user_id}, {self.platform}, active={self.is_active})"

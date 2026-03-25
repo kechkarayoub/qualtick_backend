@@ -32,8 +32,8 @@ services:
     container_name: backend_container
     # command: python manage.py runserver 0.0.0.0:${DJANGO_CONTAINER_INTERNAL_PORT} # To run django
     # command: daphne -b 0.0.0.0 -p ${WS_INTERNAL_PORT} backend.asgi:application # To run daphne
-    # command: supervisord -c /app/supervisord.conf # To run supervisord (django $$ daphne)
-    command: tail -f /dev/null # To keep the container running
+    command: supervisord -c /app/supervisord.conf # To run supervisord (django $$ daphne)
+    # command: tail -f /dev/null # To keep the container running
     environment:
       - DATABASE_URL=postgres://${DB_USER_NM}:${DB_USER_PW}@postgres:${DB_CONTAINER_INTERNAL_PORT}/${DB_NAME}
       - REDIS_URL=redis://redis:${REDIS_CONTAINER_INTERNAL_PORT}/0

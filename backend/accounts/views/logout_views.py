@@ -13,6 +13,7 @@ from rest_framework_simplejwt.token_blacklist.models import (BlacklistedToken,
 
 from accounts.tokens import RefreshToken
 from accounts.utils import (blacklist_user_tokens)
+from backend.repositories.fcm_token_repository import FCMTokenRepository
 from backend.ws_utils import (notify_profile_password_reset)
 from backend.utils import get_db_alias
 
@@ -96,6 +97,11 @@ class LogoutView(APIView):
             # is True
             if logout_all_devices:
                 notify_profile_password_reset(request.user.id, device_id=device_id)
+            FCMTokenRepository.deactivate_for_user(
+                request.user.id,
+                device_id=device_id if not logout_all_devices else None,
+                db_alias=db_alias,
+            )
             return Response({
                 "message": _("Successfully logged out"),
                 "success": True
