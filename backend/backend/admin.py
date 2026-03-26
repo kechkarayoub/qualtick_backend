@@ -1,10 +1,10 @@
 """
-Admin configuration for Contact Messages
+Admin configuration for Contact Messages and Audit Logs
 """
 from django.contrib import admin
 from django.utils.translation import gettext_lazy as _
 
-from .models import ContactMessage
+from .models import ContactMessage, AuditLog
 
 
 @admin.register(ContactMessage)
@@ -101,3 +101,62 @@ class ContactMessageAdmin(admin.ModelAdmin):
         )
 
     mark_as_closed.short_description = _('Mark as closed')
+
+
+@admin.register(AuditLog)
+class AuditLogAdmin(admin.ModelAdmin):
+    list_display = [
+        'timestamp',
+        'actor_username',
+        'action',
+        'outcome',
+        'resource_type',
+        'resource_id',
+        'ip_address',
+        'request_method',
+        'request_path',
+    ]
+    list_filter = [
+        'action',
+        'outcome',
+        'resource_type',
+        'request_method',
+        ('timestamp', admin.DateFieldListFilter),
+    ]
+    search_fields = [
+        'actor_username',
+        'description',
+        'ip_address',
+        'request_path',
+        'resource_id',
+    ]
+    readonly_fields = [
+        'timestamp',
+        'user',
+        'actor_username',
+        'action',
+        'outcome',
+        'resource_type',
+        'resource_id',
+        'description',
+        'ip_address',
+        'user_agent',
+        'request_method',
+        'request_path',
+        'extra_data',
+    ]
+    ordering = ['-timestamp']
+    list_per_page = 50
+    date_hierarchy = 'timestamp'
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).select_related('user')
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return request.user.is_superuser

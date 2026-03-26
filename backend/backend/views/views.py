@@ -19,8 +19,9 @@ from rest_framework.response import Response
 
 from backend.exceptions import GeolocationException
 from backend.repositories import ContactMessageRepository
-from backend.serializers import ContactMessageSerializer
+from backend.serializers import ContactMessageSerializer, AuditLogSerializer
 from backend.services.services import GeolocationService, ContactMessageService
+from backend.services.audit_log_service import AuditLogService
 from backend.utils import get_db_alias
 
 
@@ -342,4 +343,106 @@ def contact_message_statistics(request):
         return Response({
             'success': False,
             'message': _('An error occurred while fetching statistics.')
+        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@api_view(['GET'])
+@permission_classes([IsAdminUser])
+def audit_log_list(request):
+    """
+    List audit logs (Admin only).
+    GET /api/audit-logs/
+
+    Query parameters:
+        - user_id      (int)
+        - action       (str)
+        - outcome      (str)
+        - resource_type (str)
+        - resource_id  (str)
+        - date_from    (ISO-8601)
+        - date_to      (ISO-8601)
+        - page         (int, default 1)
+        - page_size    (int, default 50, max 200)
+    """
+    from django.utils.dateparse import parse_datetime
+    db_alias = get_db_alias(request=request)
+    try:
+        filters = {}
+        for key in ('user_id', 'action', 'outcome', 'resource_type', 'resource_id'):
+            val = request.GET.get(key)
+            if val:
+                filters[key] = int(val) if key == 'user_id' else val
+        date_from = parse_datetime(request.GET.get('date_from', '')) if request.GET.get('date_from') else None
+        date_to   = parse_datetime(request.GET.get('date_to', ''))   if request.GET.get('date_to')   else None
+
+        qs = AuditLogService.get_logs(
+            **filters, date_from=date_from, date_to=date_to, db_alias=db_alias
+        )
+
+        try:
+            page_size = min(int(request.GET.get('page_size', 50)), 200)
+            page      = max(int(request.GET.get('page', 1)), 1)
+        except (ValueError, TypeError):
+            page_size, page = 50, 1
+
+        total  = qs.count()
+        offset = (page - 1) * page_size
+        logs   = qs[offset: offset + page_size]
+
+        serializer = AuditLogSerializer(logs, many=True)
+        return Response({
+            'success': True,
+            'total': total,
+            'page': page,
+            'page_size': page_size,
+            'logs': serializer.data,
+        }, status=status.HTTP_200_OK)
+    except Exception as e:
+        logger.error(f"Error listing audit logs: {str(e)}")
+        return Response({
+            'success': False,
+            'message': _('An error occurred while fetching audit logs.'),
+        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@api_view(['GET'])
+@permission_classes([IsAdminUser])
+def audit_log_detail(request, log_id):
+    """
+    Retrieve a single audit log entry (Admin only).
+    GET /api/audit-logs/<id>/
+    """
+    from backend.repositories import AuditLogRepository
+    db_alias = get_db_alias(request=request)
+    try:
+        log = AuditLogRepository.get_by_id(log_id, db_alias=db_alias)
+        if not log:
+            return Response({'success': False, 'message': _('Log entry not found.')},
+                            status=status.HTTP_404_NOT_FOUND)
+        serializer = AuditLogSerializer(log)
+        return Response({'success': True, 'log': serializer.data}, status=status.HTTP_200_OK)
+    except Exception as e:
+        logger.error(f"Error retrieving audit log {log_id}: {str(e)}")
+        return Response({
+            'success': False,
+            'message': _('An error occurred while fetching the log entry.'),
+        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+@api_view(['GET'])
+@permission_classes([IsAdminUser])
+def audit_log_statistics(request):
+    """
+    Return aggregate statistics for the audit log (Admin only).
+    GET /api/audit-logs/statistics/
+    """
+    db_alias = get_db_alias(request=request)
+    try:
+        stats = AuditLogService.get_statistics(db_alias=db_alias)
+        return Response({'success': True, 'statistics': stats}, status=status.HTTP_200_OK)
+    except Exception as e:
+        logger.error(f"Error retrieving audit log statistics: {str(e)}")
+        return Response({
+            'success': False,
+            'message': _('An error occurred while fetching statistics.'),
         }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

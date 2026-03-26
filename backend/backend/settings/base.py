@@ -72,6 +72,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'accounts.middleware.TimezoneMiddleware',
+    'backend.middleware.audit_log_middleware.AuditLogMiddleware',
 ]
 
 # URL configuration

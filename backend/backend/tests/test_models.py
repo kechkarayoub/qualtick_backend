@@ -21,9 +21,10 @@ from django.utils.translation import activate, gettext_lazy as _
 from django.utils import timezone as django_timezone
 
 from accounts.repositories.user_repository import UserRepository
-from backend.admin import ContactMessageAdmin
-from backend.models import ContactMessage
+from backend.admin import ContactMessageAdmin, AuditLogAdmin
+from backend.models import ContactMessage, AuditLog
 from backend.repositories.contact_message_repository import ContactMessageRepository
+from backend.repositories.audit_log_repository import AuditLogRepository
 from backend.utils import get_db_alias
 
 User = get_user_model()
@@ -933,3 +934,211 @@ class ContactMessageAdminTest(TestCase):
         # Should be ordered by created_at descending
         ordered_contacts = list(queryset)
         self.assertTrue(ordered_contacts[0].created_at >= ordered_contacts[1].created_at >= ordered_contacts[2].created_at) # pylint: disable=line-too-long
+
+
+class AuditLogModelTest(TestCase):
+    """Test cases for AuditLog model."""
+
+    def setUp(self):
+        db_alias = get_db_alias()
+        from uuid import uuid4
+        suffix = uuid4().hex[:8]
+        self.user = UserRepository.create_user(
+            username=f'audituser_{suffix}',
+            email=f'audituser_{suffix}@example.com',
+            password='testpassword123',
+            current_language='en',
+            db_alias=db_alias,
+        )
+
+    def test_create_minimal_log(self):
+        db_alias = get_db_alias()
+        log = AuditLogRepository.create_log(action=AuditLog.ACTION_LOGIN, db_alias=db_alias)
+        self.assertEqual(log.action, AuditLog.ACTION_LOGIN)
+        self.assertEqual(log.outcome, AuditLog.OUTCOME_SUCCESS)
+        self.assertIsNotNone(log.timestamp)
+        self.assertIsNone(log.user)
+
+    def test_create_log_with_user(self):
+        db_alias = get_db_alias()
+        log = AuditLogRepository.create_log(
+            action=AuditLog.ACTION_UPDATE,
+            user=self.user,
+            db_alias=db_alias,
+        )
+        self.assertEqual(log.user, self.user)
+        self.assertEqual(log.actor_username, self.user.username)
+
+    def test_actor_username_snapshot(self):
+        db_alias = get_db_alias()
+        log = AuditLogRepository.create_log(
+            action=AuditLog.ACTION_LOGIN,
+            user=self.user,
+            db_alias=db_alias,
+        )
+        original_username = self.user.username
+        self.user.delete()
+        log.refresh_from_db(using=db_alias or None)
+        self.assertIsNone(log.user)
+        self.assertEqual(log.actor_username, original_username)
+
+    def test_all_action_choices_valid(self):
+        db_alias = get_db_alias()
+        valid_actions = [
+            AuditLog.ACTION_CREATE, AuditLog.ACTION_READ, AuditLog.ACTION_UPDATE,
+            AuditLog.ACTION_DELETE, AuditLog.ACTION_LOGIN, AuditLog.ACTION_LOGOUT,
+            AuditLog.ACTION_LOGIN_FAILED, AuditLog.ACTION_PASSWORD_CHANGE,
+            AuditLog.ACTION_PASSWORD_RESET, AuditLog.ACTION_EMAIL_CHANGE,
+            AuditLog.ACTION_EMAIL_VERIFY, AuditLog.ACTION_PHONE_VERIFY,
+            AuditLog.ACTION_PROFILE_UPDATE, AuditLog.ACTION_ACCOUNT_DELETE,
+            AuditLog.ACTION_OTHER,
+        ]
+        for action in valid_actions:
+            log = AuditLogRepository.create_log(action=action, db_alias=db_alias)
+            self.assertEqual(log.action, action)
+
+    def test_outcome_choices(self):
+        db_alias = get_db_alias()
+        for outcome in (AuditLog.OUTCOME_SUCCESS, AuditLog.OUTCOME_FAILURE):
+            log = AuditLogRepository.create_log(
+                action=AuditLog.ACTION_OTHER,
+                outcome=outcome,
+                db_alias=db_alias,
+            )
+            self.assertEqual(log.outcome, outcome)
+
+    def test_extra_data_json_stored(self):
+        db_alias = get_db_alias()
+        payload = {'key': 'value', 'num': 42}
+        log = AuditLogRepository.create_log(
+            action=AuditLog.ACTION_CREATE,
+            extra_data=payload,
+            db_alias=db_alias,
+        )
+        log.refresh_from_db(using=db_alias or None)
+        self.assertEqual(log.extra_data, payload)
+
+    def test_str_representation_authenticated(self):
+        db_alias = get_db_alias()
+        log = AuditLogRepository.create_log(
+            action=AuditLog.ACTION_LOGIN,
+            user=self.user,
+            db_alias=db_alias,
+        )
+        self.assertIn(self.user.username, str(log))
+        self.assertIn(AuditLog.ACTION_LOGIN, str(log))
+
+    def test_str_representation_anonymous(self):
+        db_alias = get_db_alias()
+        log = AuditLogRepository.create_log(action=AuditLog.ACTION_READ, db_alias=db_alias)
+        self.assertIn('anonymous', str(log))
+
+    def test_get_extra_data_display_none(self):
+        db_alias = get_db_alias()
+        log = AuditLogRepository.create_log(action=AuditLog.ACTION_READ, db_alias=db_alias)
+        self.assertEqual(log.get_extra_data_display(), '')
+
+    def test_get_extra_data_display_dict(self):
+        db_alias = get_db_alias()
+        log = AuditLogRepository.create_log(
+            action=AuditLog.ACTION_CREATE,
+            extra_data={'foo': 'bar'},
+            db_alias=db_alias,
+        )
+        display = log.get_extra_data_display()
+        self.assertIn('foo', display)
+
+    def test_ordering_newest_first(self):
+        db_alias = get_db_alias()
+        for action in (AuditLog.ACTION_LOGIN, AuditLog.ACTION_LOGOUT, AuditLog.ACTION_READ):
+            AuditLogRepository.create_log(action=action, db_alias=db_alias)
+        logs = list(AuditLogRepository.all(db_alias=db_alias))
+        for i in range(len(logs) - 1):
+            self.assertGreaterEqual(logs[i].timestamp, logs[i + 1].timestamp)
+
+    def test_meta_db_table(self):
+        self.assertEqual(AuditLog._meta.db_table, 'backend_audit_log')
+
+    def test_meta_indexes(self):
+        indexed = []
+        for index in AuditLog._meta.indexes:
+            indexed.extend(index.fields)
+        for expected in ('action', 'outcome', 'ip_address'):
+            self.assertIn(expected, indexed)
+
+    def test_resource_type_and_id(self):
+        db_alias = get_db_alias()
+        log = AuditLogRepository.create_log(
+            action=AuditLog.ACTION_UPDATE,
+            resource_type='accounts.User',
+            resource_id=str(self.user.id),
+            db_alias=db_alias,
+        )
+        self.assertEqual(log.resource_type, 'accounts.User')
+        self.assertEqual(log.resource_id, str(self.user.id))
+
+
+class AuditLogAdminTest(TestCase):
+    """Test cases for AuditLogAdmin."""
+
+    def setUp(self):
+        from django.contrib.admin.sites import AdminSite
+        db_alias = get_db_alias()
+        from uuid import uuid4
+        suffix = uuid4().hex[:8]
+        self.site = AdminSite()
+        self.admin_obj = AuditLogAdmin(AuditLog, self.site)
+        self.superuser = UserRepository.create_superuser(
+            db_alias=db_alias,
+            username=f'superadmin_{suffix}',
+            email=f'superadmin_{suffix}@example.com',
+            password='adminpass123',
+        )
+        self.staff_user = UserRepository.create_user(
+            username=f'staff_{suffix}',
+            email=f'staff_{suffix}@example.com',
+            password='staffpass123',
+            is_staff=True,
+            db_alias=db_alias,
+        )
+        AuditLogRepository.create_log(
+            action=AuditLog.ACTION_LOGIN,
+            user=self.superuser,
+            db_alias=db_alias,
+        )
+
+    def test_has_add_permission_false(self):
+        request = HttpRequest()
+        request.user = self.superuser
+        self.assertFalse(self.admin_obj.has_add_permission(request))
+
+    def test_has_change_permission_false(self):
+        request = HttpRequest()
+        request.user = self.superuser
+        self.assertFalse(self.admin_obj.has_change_permission(request))
+
+    def test_has_delete_permission_superuser(self):
+        request = HttpRequest()
+        request.user = self.superuser
+        self.assertTrue(self.admin_obj.has_delete_permission(request))
+
+    def test_has_delete_permission_staff(self):
+        request = HttpRequest()
+        request.user = self.staff_user
+        self.assertFalse(self.admin_obj.has_delete_permission(request))
+
+    def test_list_display_fields(self):
+        expected = [
+            'timestamp', 'actor_username', 'action', 'outcome',
+            'resource_type', 'resource_id', 'ip_address',
+            'request_method', 'request_path',
+        ]
+        self.assertEqual(self.admin_obj.list_display, expected)
+
+    def test_readonly_fields_all(self):
+        for field in ('timestamp', 'user', 'action', 'outcome', 'extra_data'):
+            self.assertIn(field, self.admin_obj.readonly_fields)
+
+    def test_registered_in_admin_site(self):
+        self.assertIn(AuditLog, admin.site._registry)
+        self.assertIsInstance(admin.site._registry[AuditLog], AuditLogAdmin)

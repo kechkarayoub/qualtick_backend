@@ -1,8 +1,8 @@
-"""Serializers for contact messages."""
+"""Serializers for contact messages and audit logs."""
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
 
-from backend.models import ContactMessage
+from backend.models import ContactMessage, AuditLog
 from backend.repositories.contact_message_repository import ContactMessageRepository
 from backend.utils import get_db_alias
 
@@ -76,3 +76,31 @@ class ContactMessageListSerializer(serializers.ModelSerializer):
             'updated_at'
         ]
         read_only_fields = ['id', 'created_at', 'updated_at']
+
+
+class AuditLogSerializer(serializers.ModelSerializer):
+    action_display = serializers.CharField(source='get_action_display', read_only=True)
+    outcome_display = serializers.CharField(source='get_outcome_display', read_only=True)
+    user_id = serializers.IntegerField(source='user.id', read_only=True, default=None)
+
+    class Meta:
+        model = AuditLog
+        fields = [
+            'id',
+            'timestamp',
+            'user_id',
+            'actor_username',
+            'action',
+            'action_display',
+            'outcome',
+            'outcome_display',
+            'resource_type',
+            'resource_id',
+            'description',
+            'ip_address',
+            'user_agent',
+            'request_method',
+            'request_path',
+            'extra_data',
+        ]
+        read_only_fields = fields

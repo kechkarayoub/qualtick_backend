@@ -15,7 +15,10 @@ from .views import (
     contact_message_list,
     contact_message_detail,
     contact_message_update_status,
-    contact_message_statistics
+    contact_message_statistics,
+    audit_log_list,
+    audit_log_detail,
+    audit_log_statistics,
 )
 
 
@@ -29,6 +32,9 @@ api_patterns = [
     path('api/contact/messages/<int:message_id>/', contact_message_detail, name='contact_message_detail'),
     path('api/contact/messages/<int:message_id>/status/', contact_message_update_status, name='contact_message_update_status'),
     path('api/contact/statistics/', contact_message_statistics, name='contact_message_statistics'),
+    path('api/audit-logs/', audit_log_list, name='audit_log_list'),
+    path('api/audit-logs/statistics/', audit_log_statistics, name='audit_log_statistics'),
+    path('api/audit-logs/<int:log_id>/', audit_log_detail, name='audit_log_detail'),
     path('accounts/', include('accounts.urls')),
 ]
 
