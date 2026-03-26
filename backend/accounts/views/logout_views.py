@@ -16,6 +16,8 @@ from accounts.utils import (blacklist_user_tokens)
 from backend.repositories.fcm_token_repository import FCMTokenRepository
 from backend.ws_utils import (notify_profile_password_reset)
 from backend.utils import get_db_alias
+from backend.models import AuditLog
+from backend.services.audit_log_service import AuditLogService
 
 # Get a logger instance
 logger = logging.getLogger(__name__)
@@ -100,6 +102,18 @@ class LogoutView(APIView):
             FCMTokenRepository.deactivate_for_user(
                 request.user.id,
                 device_id=device_id if not logout_all_devices else None,
+                db_alias=db_alias,
+            )
+            AuditLogService.log(
+                action=AuditLog.ACTION_LOGOUT,
+                outcome=AuditLog.OUTCOME_SUCCESS,
+                user=request.user,
+                resource_type='accounts.User',
+                resource_id=request.user.id,
+                description=f"User '{request.user.username}' logged out"
+                            + (' (all devices)' if logout_all_devices else ''),
+                extra_data={'logout_all_devices': logout_all_devices},
+                request=request,
                 db_alias=db_alias,
             )
             return Response({

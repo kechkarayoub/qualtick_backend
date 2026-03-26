@@ -18,6 +18,8 @@ import firebase_config  # pylint: disable=unused-import
 from backend.utils import (generate_random_code, get_all_timezones, get_db_alias, remove_file, upload_file)
 from backend.ws_utils import (notify_profile_password_update,
                               notify_profile_update)
+from backend.models import AuditLog
+from backend.services.audit_log_service import AuditLogService
 
 from accounts.models import THEME_CHOICES
 from accounts.serializers import UserSerializer
@@ -87,6 +89,26 @@ class UpdateProfileView(APIView):
                 message = _(
                     "Your profile could not be updated due to the errors listed "
                     "above. Please correct them and try again.")
+                AuditLogService.log(
+                    action=AuditLog.ACTION_PROFILE_UPDATE,
+                    outcome=AuditLog.OUTCOME_FAILURE,
+                    user=user,
+                    resource_type='accounts.User',
+                    resource_id=user.id,
+                    description=f"Profile update failed for '{user.username}' (validation error)",
+                    extra_data={
+                        'errors': serializer.errors,
+                        'fields_attempted': {
+                            k: data.get(k) for k in (
+                                'first_name', 'last_name', 'user_phone_number',
+                                'user_cin', 'user_country', 'user_gender',
+                                'user_birthday', 'user_address',
+                            )
+                        },
+                    },
+                    request=request,
+                    db_alias=db_alias,
+                )
                 return Response(
                     {'message': message, 'errors': serializer.errors, 'success': False},
                     status=status.HTTP_409_CONFLICT
@@ -153,6 +175,28 @@ class UpdateProfileView(APIView):
                 user.id, user_data,
                 password_updated=access_token is not None,
                 device_id=device_id)
+            AuditLogService.log(
+                action=AuditLog.ACTION_PROFILE_UPDATE,
+                outcome=AuditLog.OUTCOME_SUCCESS,
+                user=user,
+                resource_type='accounts.User',
+                resource_id=user.id,
+                description=f"Profile updated for '{user.username}'"
+                            + (' (password changed)' if access_token else ''),
+                extra_data={
+                    'updated_fields': {
+                        k: data.get(k) for k in (
+                            'first_name', 'last_name', 'user_phone_number',
+                            'user_cin', 'user_country', 'user_gender',
+                            'user_birthday', 'user_address', 'current_language',
+                        )
+                    },
+                    'image_updated': image_updated,
+                    'password_updated': bool(access_token),
+                },
+                request=request,
+                db_alias=db_alias,
+            )
             return Response({
                     'message': message,
                     "access_token": access_token,
@@ -188,12 +232,19 @@ class UpdateProfileView(APIView):
                 wrong_password = True
             # Prepare response
             if not wrong_password:
-                # Get device ID from request headers or data to exclude from WebSocket
-                # updates
                 device_id = request.headers.get('X-Device-ID')
-                # Notify all connected clients (via WebSocket) that the user's profile
-                # has changed
                 notify_profile_password_update(user.id, device_id=device_id)
+            AuditLogService.log(
+                action=AuditLog.ACTION_PASSWORD_CHANGE,
+                outcome=AuditLog.OUTCOME_FAILURE if wrong_password else AuditLog.OUTCOME_SUCCESS,
+                user=user,
+                resource_type='accounts.User',
+                resource_id=user.id,
+                description=f"Password change {'failed' if wrong_password else 'succeeded'}"
+                            f" for '{user.username}'",
+                request=request,
+                db_alias=db_alias,
+            )
             return Response({
                     'message': message,
                     "access_token": access_token,
