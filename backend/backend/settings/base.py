@@ -55,6 +55,7 @@ LOCAL_APPS = [
     'accounts',
     'i18n_switcher',
     'backend',
+    'permissions',
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS

@@ -36,6 +36,7 @@ api_patterns = [
     path('api/audit-logs/statistics/', audit_log_statistics, name='audit_log_statistics'),
     path('api/audit-logs/<int:log_id>/', audit_log_detail, name='audit_log_detail'),
     path('accounts/', include('accounts.urls')),
+    path('api/permissions/', include('permissions.urls')),
 ]
 
 # Main URL patterns

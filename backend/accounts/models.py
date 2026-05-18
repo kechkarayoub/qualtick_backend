@@ -119,19 +119,22 @@ class User(AbstractUser):
         """Returns the user's timezone."""
         return getattr(self, 'user_timezone', settings.TIME_ZONE)
     # noinspection PyMethodMayBeStatic
-    def to_login_dict(self):
+    def to_login_dict(self, db_alias: str = '') -> dict:
         """
         Return a dictionary representation of the user for login responses.
 
         Keys are asserted by tests and must match expected names and count.
         """
+        from permissions.services import PermissionService
         return {
             "current_language": self.current_language,
             "email": self.email,
             "first_name": self.first_name,
             "id": self.id,
+            "is_superuser": self.is_superuser,
             "is_user_phone_number_validated": self.is_user_phone_number_validated,
             "last_name": self.last_name,
+            "permissions": PermissionService.get_user_permissions(self, db_alias=db_alias),
             "user_address": self.user_address,
             "user_birthday": self.user_birthday,
             "user_cin": self.user_cin,

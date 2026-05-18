@@ -14,7 +14,7 @@ from django.views.decorators.vary import vary_on_headers
 from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
-from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from backend.exceptions import GeolocationException
@@ -23,6 +23,7 @@ from backend.serializers import ContactMessageSerializer, AuditLogSerializer
 from backend.services.services import GeolocationService, ContactMessageService
 from backend.services.audit_log_service import AuditLogService
 from backend.utils import get_db_alias
+from permissions.drf_permissions import require_permission
 
 
 logger = logging.getLogger(__name__)
@@ -256,10 +257,10 @@ def contact_message_detail(request, message_id):
 
 
 @api_view(['PATCH'])
-@permission_classes([IsAdminUser])
+@permission_classes([IsAuthenticated, require_permission('manage_contact_messages')])
 def contact_message_update_status(request, message_id):
     """
-    Update the status of a contact message (Admin only).
+    Update the status of a contact message.
     PATCH /api/contact/messages/<id>/status/
     
     Request Body:
@@ -320,10 +321,10 @@ def contact_message_update_status(request, message_id):
 
 
 @api_view(['GET'])
-@permission_classes([IsAdminUser])
+@permission_classes([IsAuthenticated, require_permission('manage_contact_messages')])
 def contact_message_statistics(request):
     """
-    Get contact message statistics (Admin only).
+    Get contact message statistics.
     GET /api/contact/statistics/
     
     Returns:
@@ -347,10 +348,10 @@ def contact_message_statistics(request):
 
 
 @api_view(['GET'])
-@permission_classes([IsAdminUser])
+@permission_classes([IsAuthenticated, require_permission('view_audit_logs')])
 def audit_log_list(request):
     """
-    List audit logs (Admin only).
+    List audit logs.
     GET /api/audit-logs/
 
     Query parameters:
@@ -406,10 +407,10 @@ def audit_log_list(request):
 
 
 @api_view(['GET'])
-@permission_classes([IsAdminUser])
+@permission_classes([IsAuthenticated, require_permission('view_audit_logs')])
 def audit_log_detail(request, log_id):
     """
-    Retrieve a single audit log entry (Admin only).
+    Retrieve a single audit log entry.
     GET /api/audit-logs/<id>/
     """
     from backend.repositories import AuditLogRepository
@@ -430,10 +431,10 @@ def audit_log_detail(request, log_id):
 
 
 @api_view(['GET'])
-@permission_classes([IsAdminUser])
+@permission_classes([IsAuthenticated, require_permission('view_audit_logs')])
 def audit_log_statistics(request):
     """
-    Return aggregate statistics for the audit log (Admin only).
+    Return aggregate statistics for the audit log.
     GET /api/audit-logs/statistics/
     """
     db_alias = get_db_alias(request=request)
